@@ -27,6 +27,7 @@
   #tokenInput { width: 200px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 2px; }
   #refreshTip { margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; }
   #offlineBox { margin-top: 20px; padding: 15px; background: #f8d7da; color: #721c24; border-radius: 8px; display: none; }
+  #errorMsg { margin-top: 10px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 6px; display: none; }
 </style>
 </head>
 <body>
@@ -47,15 +48,16 @@
 
   <!-- 解锁区域 -->
   <div id="unlockBox">
-    <p>支付成功后，请输入 <strong>订单号后 8 位</strong>：</p>
-    <input id="tokenInput" type="text" placeholder="A1B2C3D4" maxlength="8">
+    <p>支付成功后，请粘贴 <strong>完整订单号</strong>（系统会自动提取后 8 位）：</p>
+    <input id="tokenInput" type="text" placeholder="例如：AFD20240101123456" style="width:300px;">
     <button class="btn" onclick="doUnlock()">解锁</button>
     <button class="btn btn-secondary" onclick="copyToken()">复制</button>
+    <div id="errorMsg"></div>
   </div>
 
   <!-- 离线备用通道 -->
   <div id="offlineBox">
-    <p><strong>⚠️ 在线解锁服务暂时不可用</strong></p>
+    <p><strong>⚠️ 在线解锁失败</strong></p>
     <p>请使用备用解锁码，或联系站长。</p>
     <input id="backupInput" type="text" placeholder="备用解锁码" style="width:200px;padding:8px;margin-right:8px;">
     <button class="btn" onclick="doBackupUnlock()">备用解锁</button>
@@ -88,8 +90,8 @@ const id = params.get('id');
 
 // ✅ 配置区
 const API = "https://resource-api.plmplm999.workers.dev";
-const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377"; // 👈 已更新为商品页链接
-const BACKUP_CODES = { "001": "BACKUP001" }; // 👈 备用码（可扩展）
+const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377";
+const BACKUP_CODES = { "001": "BACKUP001" };
 
 let currentItem = null;
 
@@ -116,22 +118,39 @@ payBtn.onclick = () => {
   unlockBox.style.display = 'block';
 };
 
-// 自动识别 & 格式化
+// ✅ 自动提取订单号后 8 位（核心修复）
 tokenInput.addEventListener('input', e => {
-  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  let value = e.target.value.trim();
+  
+  // 移除所有非字母数字字符
+  value = value.replace(/[^A-Z0-9]/gi, '');
+  
+  // 自动提取后 8 位
+  if (value.length > 8) {
+    value = value.slice(-8);
+  }
+  
+  e.target.value = value.toUpperCase();
 });
 
 // 一键复制
 function copyToken() {
   navigator.clipboard.writeText(tokenInput.value).then(() => {
-    alert('已复制');
+    alert('已复制：' + tokenInput.value);
   });
 }
 
-// ✅ 主解锁逻辑（带离线兜底）
+// ✅ 主解锁逻辑（带明确错误提示）
 async function doUnlock() {
   const token = tokenInput.value.trim();
-  if (!token) { alert('请输入订单号后 8 位'); return; }
+  if (!token) { 
+    showError('请输入订单号');
+    return; 
+  }
+  if (token.length !== 8) {
+    showError('订单号后 8 位必须是 8 位字符');
+    return;
+  }
 
   try {
     const res = await fetch(`${API}/unlock`, {
@@ -140,11 +159,23 @@ async function doUnlock() {
       body: JSON.stringify({ resId: id, token })
     });
 
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
     const data = await res.json();
-    if (data.ok) showResult(data);
-    else offlineBox.style.display = 'block'; // 失败 → 显示备用通道
-  } catch {
-    offlineBox.style.display = 'block'; // 网络/API 挂了 → 备用通道
+    
+    if (data.ok) {
+      showResult(data);
+    } else {
+      // 明确提示订单号错误
+      showError('❌ 订单号不正确，请检查支付成功页的订单号后 8 位');
+      offlineBox.style.display = 'block';
+    }
+  } catch (err) {
+    console.error('解锁失败:', err);
+    showError('⚠️ 网络连接失败，请稍后再试');
+    offlineBox.style.display = 'block';
   }
 }
 
@@ -161,6 +192,13 @@ function doBackupUnlock() {
   }
 }
 
+// 显示错误
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.style.display = 'block';
+  result.style.display = 'none';
+}
+
 // 显示结果
 function showResult(data) {
   link.href = data.panUrl;
@@ -169,6 +207,7 @@ function showResult(data) {
   result.style.display = 'block';
   unlockBox.style.display = 'none';
   offlineBox.style.display = 'none';
+  errorMsg.style.display = 'none';
 }
 
 // 回车解锁
