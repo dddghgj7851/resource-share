@@ -49,7 +49,7 @@
   </div>
 
   <div class="email">
-    如有问题请联系：<a href="mailto:你的邮箱@qq.com">3357134774@qq.com</a>
+    如有问题请联系：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
   </div>
 </div>
 
@@ -89,7 +89,7 @@ fetch('data.json').then(r=>r.json()).then(list=>{
   desc.innerHTML = currentItem.detail.replace(/\n/g,'<br>');
 
   // ✅ 仅更新按钮文字（页面上不再单独显示价格）
-  payBtn.textContent = `🔓 赞助¥${currentItem.price} 获取网盘地址`;
+  payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
 });
 
 /* 支付弹窗 */
