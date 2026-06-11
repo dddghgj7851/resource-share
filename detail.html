@@ -15,11 +15,18 @@
   .desc { color: #555; line-height: 1.8; margin-bottom: 28px; font-size: 15px; }
   .btn { display: inline-block; background: linear-gradient(135deg,#ff6b35,#ff8a5c); color: #fff; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
   .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,.3); }
+  .btn-secondary { background: #6c757d; }
+  .btn-secondary:hover { background: #5a6268; }
   .result { margin-top: 24px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 20px; border-radius: 10px; display: none; }
   .result a { color: #2e7d32; font-weight: 600; word-break: break-all; }
   .tip { margin-top: 20px; font-size: 13px; color: #888; text-align: center; }
   .email { margin-top: 30px; font-size: 13px; color: #666; text-align: center; }
   .email a { color: #ff6b35; text-decoration: none; }
+  #unlockBox { margin-top: 20px; display: none; }
+  #unlockBox p { font-size: 14px; color: #666; margin-bottom: 10px; }
+  #tokenInput { width: 200px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 2px; }
+  #refreshTip { margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; }
+  #offlineBox { margin-top: 20px; padding: 15px; background: #f8d7da; color: #721c24; border-radius: 8px; display: none; }
 </style>
 </head>
 <body>
@@ -30,40 +37,45 @@
   <h1 id="title"></h1>
   <div class="desc" id="desc"></div>
 
-  <!-- ✅ 赞助按钮（跳转爱发电） -->
+  <!-- 赞助按钮 -->
   <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
 
-  <!-- ✅ 解锁区域（默认隐藏） -->
-  <div id="unlockBox" style="margin-top:20px;display:none;">
-    <p style="font-size:14px;color:#666;">
-      支付成功后，请输入 <strong>订单号后 8 位</strong> 解锁资源：
-    </p>
-    <input
-      id="tokenInput"
-      type="text"
-      placeholder="例如：A1B2C3D4"
-      style="width:200px;padding:8px;margin-right:8px;"
-    />
-    <button class="btn" onclick="doUnlock()">解锁</button>
+  <!-- 刷新提示 -->
+  <div id="refreshTip">
+    ✅ 支付完成后，请 <strong>刷新本页面</strong>，然后输入订单号后 8 位解锁。
   </div>
 
-  <!-- ✅ 结果展示 -->
-  <div id="result" style="display:none;margin-top:20px;">
+  <!-- 解锁区域 -->
+  <div id="unlockBox">
+    <p>支付成功后，请输入 <strong>订单号后 8 位</strong>：</p>
+    <input id="tokenInput" type="text" placeholder="A1B2C3D4" maxlength="8">
+    <button class="btn" onclick="doUnlock()">解锁</button>
+    <button class="btn btn-secondary" onclick="copyToken()">复制</button>
+  </div>
+
+  <!-- 离线备用通道 -->
+  <div id="offlineBox">
+    <p><strong>⚠️ 在线解锁服务暂时不可用</strong></p>
+    <p>请使用备用解锁码，或联系站长。</p>
+    <input id="backupInput" type="text" placeholder="备用解锁码" style="width:200px;padding:8px;margin-right:8px;">
+    <button class="btn" onclick="doBackupUnlock()">备用解锁</button>
+  </div>
+
+  <!-- 结果 -->
+  <div class="result" id="result">
     <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
     <p>🔑 提取码：<strong id="code"></strong></p>
   </div>
 
   <div class="tip">
-    支付完成后，请回到此页面输入<br>
-    <strong>订单号后 8 位</strong> 即可解锁资源
+    如无法自动识别，请手动输入订单号后 8 位
   </div>
 
   <div class="email">
-    如遇无法访问，请联系：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
+    问题反馈：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
   </div>
 </div>
 
-<!-- ✅ 备案说明 -->
 <div class="email" style="margin-top:40px;font-size:13px;color:#aaa;text-align:center;">
   本站为个人整理分享，通过
   <a href="https://afdian.net/@你的ID" target="_blank" style="color:#ff6b35;">爱发电</a>
@@ -74,15 +86,14 @@
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
 
-// ✅ 你的 Worker 地址
+// ✅ 配置区
 const API = "https://resource-api.plmplm999.workers.dev";
-
-// ✅ 爱发电主页（不再用 item 路径）
-const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377";
+const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377"; // 👈 已更新为商品页链接
+const BACKUP_CODES = { "001": "BACKUP001" }; // 👈 备用码（可扩展）
 
 let currentItem = null;
 
-// 加载资源信息
+// 加载资源
 fetch('data.json')
   .then(r => r.json())
   .then(list => {
@@ -91,68 +102,78 @@ fetch('data.json')
       document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>';
       return;
     }
-
     hero.src = currentItem.preview_img;
     title.textContent = currentItem.title;
     desc.innerHTML = currentItem.detail.replace(/\n/g, '<br>');
     payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
   });
 
-// ✅ 点击赞助 → 跳爱发电
+// 点击赞助
 payBtn.onclick = () => {
   if (!currentItem) return;
   window.open(AFD_HOME, '_blank');
+  refreshTip.style.display = 'block';
   unlockBox.style.display = 'block';
 };
 
-// ✅ 解锁逻辑（带容错）
+// 自动识别 & 格式化
+tokenInput.addEventListener('input', e => {
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+});
+
+// 一键复制
+function copyToken() {
+  navigator.clipboard.writeText(tokenInput.value).then(() => {
+    alert('已复制');
+  });
+}
+
+// ✅ 主解锁逻辑（带离线兜底）
 async function doUnlock() {
-  const token = document.getElementById("tokenInput").value.trim();
-  if (!token) {
-    alert("请输入订单号后 8 位");
-    return;
-  }
+  const token = tokenInput.value.trim();
+  if (!token) { alert('请输入订单号后 8 位'); return; }
 
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000); // 8秒超时
-
     const res = await fetch(`${API}/unlock`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ resId: id, token }),
-      signal: controller.signal
+      body: JSON.stringify({ resId: id, token })
     });
 
-    clearTimeout(timeout);
-
-    if (!res.ok) {
-      throw new Error("服务器响应异常");
-    }
-
     const data = await res.json();
-
-    if (data.ok) {
-      link.href = data.panUrl;
-      link.textContent = data.panUrl;
-      code.textContent = data.panCode;
-      result.style.display = 'block';
-      unlockBox.style.display = 'none';
-      payBtn.style.display = 'none';
-    } else {
-      alert("❌ " + data.msg);
-    }
-  } catch (err) {
-    alert("⚠️ 服务暂时不可用，请稍后再试或联系站长。");
-    console.error(err);
+    if (data.ok) showResult(data);
+    else offlineBox.style.display = 'block'; // 失败 → 显示备用通道
+  } catch {
+    offlineBox.style.display = 'block'; // 网络/API 挂了 → 备用通道
   }
 }
 
-// ✅ 回车触发解锁
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && unlockBox.style.display === 'block') {
-    doUnlock();
+// ✅ 备用解锁
+function doBackupUnlock() {
+  const backupToken = backupInput.value.trim();
+  if (backupToken === BACKUP_CODES[id]) {
+    showResult({
+      panUrl: currentItem.panUrl,
+      panCode: currentItem.panCode
+    });
+  } else {
+    alert('备用码错误，请联系站长');
   }
+}
+
+// 显示结果
+function showResult(data) {
+  link.href = data.panUrl;
+  link.textContent = data.panUrl;
+  code.textContent = data.panCode;
+  result.style.display = 'block';
+  unlockBox.style.display = 'none';
+  offlineBox.style.display = 'none';
+}
+
+// 回车解锁
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && unlockBox.style.display === 'block') doUnlock();
 });
 </script>
 </body>
