@@ -1,50 +1,73 @@
-<script>
-const params = new URLSearchParams(location.search);
-const id = params.get('id');
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>资源详情</title>
+<style>
+body { font-family: sans-serif; padding: 40px; background: #f5f5f5; }
+.box { max-width: 700px; margin: auto; background: #fff; padding: 24px; border-radius: 10px; }
+img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; background: #ddd; }
+h1 { margin: 16px 0; }
+button { margin-top: 20px; padding: 10px 20px; background: #ff6b35; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+#result { margin-top: 20px; padding: 15px; background: #f0f9f0; border: 1px solid #c8e6c8; display: none; }
+</style>
+</head>
+<body>
 
-// 👉 改成你的 Worker 地址
+<div class="box">
+  <a href="index.html">← 返回</a>
+  <img id="img">
+  <h1 id="title">加载中…</h1>
+  <div id="desc"></div>
+
+  <button onclick="unlock()">获取资源</button>
+  <div id="result">
+    <p>网盘：<a id="link" target="_blank"></a></p>
+    <p>提取码：<strong id="code"></strong></p>
+  </div>
+</div>
+
+<script>
+/* 👇 改成你自己的 Worker 地址 */
 const API = "https://resource-api.plmplm999.workers.dev";
 
-// 从 data.json 加载展示信息
-fetch('data.json').then(r=>r.json()).then(list=>{
-  const item = list.find(x=>x.id===id);
-  if(!item){ document.body.innerHTML='<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>'; return; }
-  hero.src = item.preview_img;
-  title.textContent = item.title;
-  desc.innerHTML = item.detail.replace(/\n/g,'<br>');
-});
+const id = new URLSearchParams(location.search).get("id");
 
-const payBtn = document.getElementById('payBtn');
-const result = document.getElementById('result');
-const link = document.getElementById('link');
-const code = document.getElementById('code');
+fetch("data.json")
+  .then(r => r.json())
+  .then(list => {
+    const item = list.find(i => i.id === id);
+    if (!item) {
+      document.body.innerHTML = "<p style='padding:60px;text-align:center;color:#999'>资源不存在</p>";
+      return;
+    }
+    img.src = item.preview_img;
+    title.textContent = item.title;
+    desc.innerHTML = item.detail;
+  });
 
-payBtn.onclick = () => {
-  // 第一屏：引导赞助 + 让用户输入解锁码
-  const token = prompt(
-    "🎉 赞助任意金额后，你将获得解锁码\n\n" +
-    "👉 赞助方式：https://afdian.net/@你的ID\n" +
-    "（或微信：你的微信号）\n\n" +
-    "请输入你的解锁码："
-  );
+function unlock() {
+  const token = prompt("请输入解锁码：");
   if (!token) return;
 
   fetch(API + "/unlock", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ resId: id, token: token.trim() })
+    body: JSON.stringify({ resId: id, token })
   })
-  .then(r=>r.json())
-  .then(j=>{
+  .then(r => r.json())
+  .then(j => {
     if (j.ok) {
       link.href = j.panUrl;
       link.textContent = j.panUrl;
       code.textContent = j.panCode;
-      result.style.display = 'block';
-      payBtn.style.display = 'none';
+      result.style.display = "block";
     } else {
-      alert("❌ " + j.msg);
+      alert(j.msg);
     }
   });
-};
+}
 </script>
+
+</body>
+</html>
