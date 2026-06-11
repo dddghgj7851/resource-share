@@ -30,13 +30,27 @@
   <h1 id="title"></h1>
   <div class="desc" id="desc"></div>
 
-  <!-- 赞助按钮（跳转爱发电） -->
+  <!-- ✅ 赞助按钮（跳转爱发电） -->
   <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
 
-  <div class="result" id="result">
+  <!-- ✅ 解锁区域（默认隐藏） -->
+  <div id="unlockBox" style="margin-top:20px;display:none;">
+    <p style="font-size:14px;color:#666;">
+      支付成功后，请输入 <strong>订单号后 8 位</strong> 解锁资源：
+    </p>
+    <input
+      id="tokenInput"
+      type="text"
+      placeholder="例如：A1B2C3D4"
+      style="width:200px;padding:8px;margin-right:8px;"
+    />
+    <button class="btn" onclick="doUnlock()">解锁</button>
+  </div>
+
+  <!-- ✅ 结果展示 -->
+  <div id="result" style="display:none;margin-top:20px;">
     <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
     <p>🔑 提取码：<strong id="code"></strong></p>
-    <p style="color:#999;font-size:13px;margin-top:10px;">如未跳转，请手动复制上方链接</p>
   </div>
 
   <div class="tip">
@@ -45,16 +59,26 @@
   </div>
 
   <div class="email">
-    如有问题请联系：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
+    如遇无法访问，请联系：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
   </div>
+</div>
+
+<!-- ✅ 备案说明 -->
+<div class="email" style="margin-top:40px;font-size:13px;color:#aaa;text-align:center;">
+  本站为个人整理分享，通过
+  <a href="https://afdian.net/@你的ID" target="_blank" style="color:#ff6b35;">爱发电</a>
+  接受赞助支持，非商业售卖。
 </div>
 
 <script>
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
 
-// 👉 改成你的 Worker 地址
+// ✅ 你的 Worker 地址
 const API = "https://resource-api.plmplm999.workers.dev";
+
+// ✅ 爱发电主页（不再用 item 路径）
+const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377";
 
 let currentItem = null;
 
@@ -71,57 +95,65 @@ fetch('data.json')
     hero.src = currentItem.preview_img;
     title.textContent = currentItem.title;
     desc.innerHTML = currentItem.detail.replace(/\n/g, '<br>');
-
-    // 更新按钮文字
     payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
   });
 
-// 点击赞助 → 跳转到爱发电
+// ✅ 点击赞助 → 跳爱发电
 payBtn.onclick = () => {
   if (!currentItem) return;
-  // 👉 替换成你的爱发电商品链接
-  const AFD_ITEM_URL = 'https://afdian.com/item/e64d18d2658811f192f252540025c377'; // ← 粘贴真实链接
-
-document.getElementById('payBtn').onclick = () => {
-  window.open(AFD_ITEM_URL, '_blank');
-};
+  window.open(AFD_HOME, '_blank');
+  unlockBox.style.display = 'block';
 };
 
-// 解锁逻辑
-function unlock() {
-  const token = prompt("请输入支付成功页显示的订单号后 8 位：");
-  if (!token) return;
+// ✅ 解锁逻辑（带容错）
+async function doUnlock() {
+  const token = document.getElementById("tokenInput").value.trim();
+  if (!token) {
+    alert("请输入订单号后 8 位");
+    return;
+  }
 
-  fetch(`${API}/unlock`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ resId: id, token: token.trim() })
-  })
-  .then(r => r.json())
-  .then(j => {
-    if (j.ok) {
-      link.href = j.panUrl;
-      link.textContent = j.panUrl;
-      code.textContent = j.panCode;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000); // 8秒超时
+
+    const res = await fetch(`${API}/unlock`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resId: id, token }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      throw new Error("服务器响应异常");
+    }
+
+    const data = await res.json();
+
+    if (data.ok) {
+      link.href = data.panUrl;
+      link.textContent = data.panUrl;
+      code.textContent = data.panCode;
       result.style.display = 'block';
+      unlockBox.style.display = 'none';
       payBtn.style.display = 'none';
     } else {
-      alert("❌ " + j.msg);
+      alert("❌ " + data.msg);
     }
-  });
+  } catch (err) {
+    alert("⚠️ 服务暂时不可用，请稍后再试或联系站长。");
+    console.error(err);
+  }
 }
 
-// 监听键盘快捷键（可选）
+// ✅ 回车触发解锁
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && result.style.display !== 'block') {
-    unlock();
+  if (e.key === 'Enter' && unlockBox.style.display === 'block') {
+    doUnlock();
   }
 });
 </script>
 </body>
 </html>
-<div class="email" style="margin-top:40px;font-size:13px;color:#aaa;text-align:center;">
-  本站为个人整理分享，通过
-  <a href="https://afdian.net/@你的ID" target="_blank" style="color:#ff6b35;">爱发电</a>
-  接受赞助支持，非商业售卖。
-</div>
