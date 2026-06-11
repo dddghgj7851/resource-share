@@ -13,7 +13,6 @@
   .hero { width: 100%; height: 260px; object-fit: cover; border-radius: 10px; background: #eee; }
   h1 { margin: 20px 0 14px; color: #222; }
   .desc { color: #555; line-height: 1.8; margin-bottom: 28px; }
-  .price { font-size: 22px; color: #e53935; font-weight: bold; margin-bottom: 20px; }
   .btn { display: inline-block; background: #ff6b35; color: #fff; padding: 12px 36px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
   .btn:hover { background: #e55a28; }
   .result { margin-top: 20px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 16px 20px; border-radius: 8px; display: none; }
@@ -38,10 +37,9 @@
   <a class="back" href="index.html">← 返回首页</a>
   <img class="hero" id="hero" src="" alt="">
   <h1 id="title"></h1>
-  <div class="price" id="price"></div>
   <div class="desc" id="desc"></div>
 
-  <!-- 赞助按钮（文字会被 JS 动态改写） -->
+  <!-- 赞助按钮（价格已合并到按钮文字） -->
   <button class="btn" id="payBtn" onclick="openPay()">🔓 赞助获取网盘地址</button>
 
   <div class="result" id="result">
@@ -88,10 +86,9 @@ fetch('data.json').then(r=>r.json()).then(list=>{
 
   hero.src = currentItem.preview_img;
   title.textContent = currentItem.title;
-  price.textContent = "赞助金额：¥ " + currentItem.price;
   desc.innerHTML = currentItem.detail.replace(/\n/g,'<br>');
 
-  // ✅ 关键改动：把价格拼到按钮文字里
+  // ✅ 仅更新按钮文字（页面上不再单独显示价格）
   payBtn.textContent = `🔓 赞助¥${currentItem.price} 获取网盘地址`;
 });
 
@@ -126,7 +123,7 @@ function afterPay(){
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ resId: id, token: token.trim() })
-   })
+  })
   .then(r=>r.json())
   .then(j=>{
     if(j.ok){
