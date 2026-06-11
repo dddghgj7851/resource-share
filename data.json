@@ -5,7 +5,8 @@
     "preview_img": "https://picsum.photos/400/250?random=1",
     "detail": "这里写资源的详细介绍，比如包含什么内容、使用方法等。",
     "pan_url": "https://pan.baidu.com/s/xxxxxx",
-    "pan_code": "abcd"
+    "pan_code": "abcd",
+    "price": 9.9
   },
   {
     "id": "002",
@@ -13,7 +14,8 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   },
   {
     "id": "003",
@@ -21,7 +23,8 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   },
   {
     "id": "004",
@@ -29,7 +32,8 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   },
   {
     "id": "005",
@@ -37,7 +41,8 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   },
   {
     "id": "006",
@@ -45,7 +50,8 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   },
   {
     "id": "007",
@@ -53,7 +59,8 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   },
   {
     "id": "008",
@@ -61,7 +68,8 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   },
   {
     "id": "009",
@@ -69,6 +77,7 @@
     "preview_img": "https://picsum.photos/400/250?random=2",
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh"
+    "pan_code": "efgh",
+    "price": 9.9
   }
 ]
