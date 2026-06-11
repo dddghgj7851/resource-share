@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>详情</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "Microsoft YaHei", sans-serif; background: #f5f5f5; padding: 20px; }
+  .box { max-width: 720px; margin: 40px auto; background: #fff; border-radius: 14px; padding: 30px; }
+  .back { color: #888; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 18px; }
+  .back:hover { color: #333; }
+  .hero { width: 100%; height: 260px; object-fit: cover; border-radius: 10px; background: #eee; }
+  h1 { margin: 20px 0 14px; color: #222; }
+  .desc { color: #555; line-height: 1.8; margin-bottom: 28px; }
+  .btn { display: inline-block; background: #ff6b35; color: #fff; padding: 12px 36px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
+  .btn:hover { background: #e55a28; }
+  .result { margin-top: 20px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 16px 20px; border-radius: 8px; display: none; }
+  .result a { color: #2e7d32; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <a class="back" href="index.html">← 返回首页</a>
+  <img class="hero" id="hero" src="" alt="">
+  <h1 id="title"></h1>
+  <div class="desc" id="desc"></div>
+
+  <!-- 赞助按钮 -->
+  <button class="btn" id="payBtn" onclick="goPay()">🔓 赞助获取网盘地址</button>
+
+  <!-- 赞助完成后的链接区（目前是半手动：你告诉访客你的微信/爱发电链接） -->
+  <div class="result" id="result">
+    <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
+    <p>🔑 提取码：<strong id="code"></strong></p>
+    <p style="color:#999;font-size:13px;margin-top:8px;">如未跳转，请手动复制上方链接</p>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+
+fetch('data.json').then(r=>r.json()).then(list=>{
+  const item = list.find(x=>x.id===id);
+  if(!item){ document.body.innerHTML='<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>'; return; }
+  hero.src = item.preview_img;
+  title.textContent = item.title;
+  desc.innerHTML = item.detail.replace(/\n/g,'<br>');
+
+  // 赞助完成后：把信息存在 URL hash 里（简易版，见下方说明）
+  window.goPay = function(){
+    // 👉 替换成你的爱发电/收款页链接：
+    const yourSponsorLink = 'https://afdian.net/@你的ID';
+    // 或微信收款码图片直接 alert 出来：
+    const payDone = confirm(
+      '👉 请通过以下方式赞助任意金额完成获取：\n\n' +
+      '① 爱发电：' + yourSponsorLink + '\n' +
+      '（或联系微信：你的微信号）\n\n' +
+      '赞助完成后，点"确定"显示网盘地址'
+    );
+    if(payDone){
+      link.href = item.pan_url;
+      link.textContent = item.pan_url;
+      code.textContent = item.pan_code;
+      result.style.display = 'block';
+      payBtn.style.display = 'none';
+    }
+  };
+});
+</script>
+</body>
+</html>
