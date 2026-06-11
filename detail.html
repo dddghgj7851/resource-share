@@ -3,32 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>详情</title>
+<title>资源详情</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, "Microsoft YaHei", sans-serif; background: #f5f5f5; padding: 20px; }
-  .box { max-width: 720px; margin: 40px auto; background: #fff; border-radius: 14px; padding: 30px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; padding: 20px; }
+  .box { max-width: 720px; margin: 40px auto; background: #fff; border-radius: 14px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,.05); }
   .back { color: #888; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 18px; }
   .back:hover { color: #333; }
   .hero { width: 100%; height: 260px; object-fit: cover; border-radius: 10px; background: #eee; }
-  h1 { margin: 20px 0 14px; color: #222; }
-  .desc { color: #555; line-height: 1.8; margin-bottom: 28px; }
-  .btn { display: inline-block; background: #ff6b35; color: #fff; padding: 12px 36px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
-  .btn:hover { background: #e55a28; }
-  .result { margin-top: 20px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 16px 20px; border-radius: 8px; display: none; }
-  .result a { color: #2e7d32; font-weight: 600; }
-  .email { margin-top: 30px; font-size: 14px; color: #666; text-align: center; }
+  h1 { margin: 20px 0 14px; color: #222; font-size: 24px; }
+  .desc { color: #555; line-height: 1.8; margin-bottom: 28px; font-size: 15px; }
+  .btn { display: inline-block; background: linear-gradient(135deg,#ff6b35,#ff8a5c); color: #fff; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,.3); }
+  .result { margin-top: 24px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 20px; border-radius: 10px; display: none; }
+  .result a { color: #2e7d32; font-weight: 600; word-break: break-all; }
+  .tip { margin-top: 20px; font-size: 13px; color: #888; text-align: center; }
+  .email { margin-top: 30px; font-size: 13px; color: #666; text-align: center; }
   .email a { color: #ff6b35; text-decoration: none; }
-
-  .modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; z-index: 999; }
-  .modal { background: #fff; border-radius: 14px; padding: 28px; width: 340px; text-align: center; }
-  .modal h3 { margin-bottom: 14px; }
-  .qrcode { width: 200px; height: 200px; margin: 0 auto 14px; background: #f5f5f5; border-radius: 8px; }
-  .qrcode img { width: 100%; height: 100%; object-fit: contain; }
-  .pay-way { display: flex; gap: 12px; justify-content: center; margin-bottom: 18px; }
-  .pay-way button { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
-  .pay-way button.active { border-color: #ff6b35; color: #ff6b35; }
-  .tip { font-size: 13px; color: #999; margin-bottom: 18px; }
 </style>
 </head>
 <body>
@@ -39,33 +30,22 @@
   <h1 id="title"></h1>
   <div class="desc" id="desc"></div>
 
-  <!-- 赞助按钮（价格已合并到按钮文字） -->
-  <button class="btn" id="payBtn" onclick="openPay()">🔓 赞助获取网盘地址</button>
+  <!-- 赞助按钮（跳转爱发电） -->
+  <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
 
   <div class="result" id="result">
     <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
     <p>🔑 提取码：<strong id="code"></strong></p>
-    <p style="color:#999;font-size:13px;margin-top:8px;">如未跳转，请手动复制上方链接</p>
+    <p style="color:#999;font-size:13px;margin-top:10px;">如未跳转，请手动复制上方链接</p>
+  </div>
+
+  <div class="tip">
+    支付完成后，请回到此页面输入<br>
+    <strong>订单号后 8 位</strong> 即可解锁资源
   </div>
 
   <div class="email">
-    如有问题请联系：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
-  </div>
-</div>
-
-<!-- 支付弹窗 -->
-<div class="modal-mask" id="mask">
-  <div class="modal">
-    <h3>微信 / 支付宝 赞助</h3>
-    <div class="pay-way">
-      <button class="active" onclick="switchPay('wechat')">微信</button>
-      <button onclick="switchPay('alipay')">支付宝</button>
-    </div>
-    <div class="qrcode">
-      <img id="qrImg" src="" alt="">
-    </div>
-    <div class="tip" id="payTip"></div>
-    <button class="btn" onclick="afterPay()">我已完成支付</button>
+    如有问题请联系：<a href="mailto:你的邮箱@qq.com">你的邮箱@qq.com</a>
   </div>
 </div>
 
@@ -74,79 +54,65 @@ const params = new URLSearchParams(location.search);
 const id = params.get('id');
 
 // 👉 改成你的 Worker 地址
-const API = "https://res.top147.dpdns.org";
+const API = "https://resource-api.plmplm999.workers.dev";
 
 let currentItem = null;
-const payBtn = document.getElementById('payBtn');
 
 // 加载资源信息
-fetch('data.json').then(r=>r.json()).then(list=>{
-  currentItem = list.find(x=>x.id===id);
-  if(!currentItem){ document.body.innerHTML='<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>'; return; }
+fetch('data.json')
+  .then(r => r.json())
+  .then(list => {
+    currentItem = list.find(x => x.id === id);
+    if (!currentItem) {
+      document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>';
+      return;
+    }
 
-  hero.src = currentItem.preview_img;
-  title.textContent = currentItem.title;
-  desc.innerHTML = currentItem.detail.replace(/\n/g,'<br>');
+    hero.src = currentItem.preview_img;
+    title.textContent = currentItem.title;
+    desc.innerHTML = currentItem.detail.replace(/\n/g, '<br>');
 
-  // ✅ 仅更新按钮文字（页面上不再单独显示价格）
-  payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
-});
+    // 更新按钮文字
+    payBtn.textContent = `🔓 赞助¥${currentItem.price} 获取网盘地址`;
+  });
 
-/* 支付弹窗 */
-function openPay(){
-  document.getElementById('mask').style.display = 'flex';
-  switchPay('wechat');
-}
+// 点击赞助 → 跳转到爱发电
+payBtn.onclick = () => {
+  if (!currentItem) return;
+  // 👉 替换成你的爱发电商品链接
+  window.open(`https://afdian.net/item/${currentItem.id}`, '_blank');
+};
 
-function switchPay(type){
-  const qrImg = document.getElementById('qrImg');
-  const tip = document.getElementById('payTip');
+// 解锁逻辑
+function unlock() {
+  const token = prompt("请输入支付成功页显示的订单号后 8 位：");
+  if (!token) return;
 
-  if(type==='wechat'){
-    qrImg.src = "https://i.ibb.co/jZwtNX8n/005-BED1-E780-FD1-F98-B19-E45542-D3-C6-FF.png";
-    tip.textContent = "转账时请备注：你的微信昵称";
-  }else{
-    qrImg.src = "https://i.ibb.co/tMLcZwpH/C6-CC6-CD14-DD12989-CA833-B7-A488-B43-F0.jpg";
-    tip.textContent = "转账时请备注：你的支付宝昵称";
-  }
-
-  document.querySelectorAll('.pay-way button').forEach(btn=>btn.classList.remove('active'));
-  event.target.classList.add('active');
-}
-
-/* 支付后输入解锁码 */
-function afterPay(){
-  const token = prompt("请输入你转账时填写的备注（解锁码）：");
-  if(!token) return;
-
-  fetch(API + "/unlock", {
+  fetch(`${API}/unlock`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ resId: id, token: token.trim() })
   })
-  .then(r=>r.json())
-  .then(j=>{
-    if(j.ok){
+  .then(r => r.json())
+  .then(j => {
+    if (j.ok) {
       link.href = j.panUrl;
       link.textContent = j.panUrl;
       code.textContent = j.panCode;
       result.style.display = 'block';
       payBtn.style.display = 'none';
-      document.getElementById('mask').style.display = 'none';
-    }else{
+    } else {
       alert("❌ " + j.msg);
     }
   });
 }
 
-document.getElementById('mask').onclick = e=>{
-  if(e.target===e.currentTarget) e.target.style.display='none';
-};
+// 监听键盘快捷键（可选）
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && result.style.display !== 'block') {
+    unlock();
+  }
+});
 </script>
 </body>
 </html>
-<div class="email" style="margin-top:40px;font-size:13px;color:#aaa;text-align:center;">
-  本站为个人整理分享，通过
-  <a href="https://afdian.net/@你的ID" target="_blank" style="color:#ff6b35;">爱发电</a>
-  接受赞助支持，非商业售卖。
-</div>
