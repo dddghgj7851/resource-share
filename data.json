@@ -1,0 +1,18 @@
+[
+  {
+    "id": "001",
+    "title": "示例资源：AI绘画笔刷包",
+    "preview_img": "https://picsum.photos/400/250?random=1",
+    "detail": "这里写资源的详细介绍，比如包含什么内容、使用方法等。",
+    "pan_url": "https://pan.baidu.com/s/xxxxxx",
+    "pan_code": "abcd"
+  },
+  {
+    "id": "002",
+    "title": "示例资源：LUT调色预设合集",
+    "preview_img": "https://picsum.photos/400/250?random=2",
+    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
+    "pan_url": "https://pan.baidu.com/s/yyyyyy",
+    "pan_code": "efgh"
+  }
+]
