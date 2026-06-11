@@ -14,13 +14,5 @@
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
     "pan_code": "efgh"
-  },
-  {
-    "id": "003",
-    "title": "第三个资源的标题",
-    "preview_img": "https://你的图床链接.jpg",
-    "detail": "详细介绍文字写这里",
-    "pan_url": "https://pan.baidu.com/s/第三个链接",
-    "pan_code": "提取码"
   }
 ]
