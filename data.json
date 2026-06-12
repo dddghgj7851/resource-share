@@ -2,106 +2,45 @@
   {
     "id": "001",
     "title": "001-柳神神威-AI绘画",
+    "detail": "这里写资源的详细介绍，比如包含什么内容、使用方法等。",
+    "price": 1.0,
     "preview_img": "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg",
     "images": [
       "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg",
       "https://i.ibb.co/99THBy16/VAM-TG-guoman18-1.jpg",
       "https://i.ibb.co/wF3YGX97/VAM-guoman18-77.jpg"
     ],
-    "detail": "这里写资源的详细介绍，比如包含什么内容、使用方法等。",
     "pan_url": "https://pan.baidu.com/s/xxxxxx",
     "pan_code": "abcd",
-    "price": 1.0,
     "afdLink": "https://afdian.com/item/e64d18d2658811f192f252540025c377"
   },
   {
     "id": "002",
     "title": "002-紫灵天南篇-AI绘画",
+    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
+    "price": 9.9,
     "preview_img": "https://i.ibb.co/sdyF0K1s/VAM-TG-guoman18-9.jpg",
     "images": [
       "https://i.ibb.co/2372hyk9/VAM-TG-guoman18-27.jpg",
       "https://i.ibb.co/zV0gY7cx/VAM-guoman18-157.jpg",
       "https://i.ibb.co/jZkL2VpX/VAM-guoman18-47.jpg"
     ],
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
     "pan_code": "efgh",
-    "price": 9.9,
     "afdLink": "https://afdian.com/item/75687742661e11f1b2c852540025c377"
   },
   {
     "id": "003",
     "title": "003-陆嫁嫁情意深深-AI",
+    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
+    "price": 9.9,
     "preview_img": "https://i.ibb.co/dwLyyrB8/VAM-guoman18-46.jpg",
     "images": [
       "https://i.ibb.co/d0Pq79mY/VAM-guoman18-18.jpg",
       "https://i.ibb.co/3YQDK1XZ/VAM-guoman18-4.jpg",
       "https://i.ibb.co/0jdLfNDh/VAM-guoman18-1.jpg"
     ],
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
     "pan_code": "efgh",
-    "price": 9.9,
-    "afdLink": "https://afdian.com/item/d5c22548661e11f1ad0d52540025c377"
-  },
-  {
-    "id": "004",
-    "title": "示例资源：LUT调色预设合集3",
-    "preview_img": "https://picsum.photos/400/250?random=4",
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
-    "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh",
-    "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_4>"
-  },
-  {
-    "id": "005",
-    "title": "示例资源：LUT调色预设合集4",
-    "preview_img": "https://picsum.photos/400/250?random=5",
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
-    "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh",
-    "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_5>"
-  },
-  {
-    "id": "006",
-    "title": "示例资源：LUT调色预设合集5",
-    "preview_img": "https://picsum.photos/400/250?random=6",
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
-    "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh",
-    "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_6>"
-  },
-  {
-    "id": "007",
-    "title": "示例资源：LUT调色预设合集6",
-    "preview_img": "https://picsum.photos/400/250?random=7",
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
-    "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh",
-    "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_7>"
-  },
-  {
-    "id": "008",
-    "title": "示例资源：LUT调色预设合集7",
-    "preview_img": "https://picsum.photos/400/250?random=8",
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
-    "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh",
-    "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_8>"
-  },
-  {
-    "id": "009",
-    "title": "示例资源：LUT调色预设合集8",
-    "preview_img": "https://picsum.photos/400/250?random=9",
-    "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
-    "pan_url": "https://pan.baidu.com/s/yyyyyy",
-    "pan_code": "efgh",
-    "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_9>"
-  }
+    "afdLink": "https://afdian.com/item/75687742661e11f1b2c852540025c377"
 ]
