@@ -11,24 +11,48 @@
   .back { color: #888; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 18px; }
   .back:hover { color: #333; }
   
-  /* ✅ 图片网格（最多6张） */
+  /* ✅ 预览图（顶部大图）- 显示最上方内容 */
+  .preview-container {
+    width: 100%;
+    height: 320px; /* 更高的高度 */
+    margin-bottom: 24px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f0f0f0;
+    position: relative;
+  }
+  .preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top; /* ✅ 关键：显示图片最上方 */
+    transition: transform 0.3s;
+  }
+  .preview-container img:hover {
+    transform: scale(1.02);
+  }
+  
+  /* ✅ 详情页图片网格 - 三行两列，全图展示 */
   .image-grid { 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: repeat(2, 1fr); /* ✅ 两列 */
+    grid-template-rows: repeat(3, 140px); /* ✅ 三行，固定高度 */
     gap: 12px; 
     margin-bottom: 24px; 
   }
   .image-grid img { 
     width: 100%; 
-    height: 160px; 
-    object-fit: cover; 
-    border-radius: 10px; 
-    background: #eee; 
-    border: 1px solid #f0f0f0;
+    height: 100%; 
+    object-fit: contain; /* ✅ 全图展示，不裁剪 */
+    border-radius: 8px; 
+    background: #f8f8f8; /* ✅ 浅灰背景，避免透明图看不清 */
+    border: 1px solid #e8e8e8;
     transition: transform 0.2s;
+    padding: 4px; /* ✅ 内边距，让图片不贴边 */
   }
   .image-grid img:hover {
     transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
   
   h1 { margin: 20px 0 14px; color: #222; font-size: 24px; }
@@ -56,9 +80,14 @@
 <div class="box">
   <a class="back" href="index.html">← 返回首页</a>
   
-  <!-- ✅ 图片网格（最多6张） -->
+  <!-- ✅ 预览图（顶部大图）- 显示最上方内容 -->
+  <div class="preview-container" id="previewContainer">
+    <!-- 预览图动态插入 -->
+  </div>
+  
+  <!-- ✅ 详情页图片网格（三行两列，全图展示） -->
   <div class="image-grid" id="imageGrid">
-    <!-- 图片动态插入 -->
+    <!-- 详情图动态插入 -->
   </div>
   
   <h1 id="title"></h1>
@@ -129,15 +158,27 @@ fetch('data.json')
       return;
     }
     
-    // ✅ 渲染图片（最多6张）
+    // ✅ 渲染预览图（顶部大图，显示最上方）
+    const previewContainer = document.getElementById('previewContainer');
+    if (currentItem.preview_img) {
+      previewContainer.innerHTML = `<img src="${currentItem.preview_img}" alt="${currentItem.title} 预览图">`;
+    } else if (currentItem.images && currentItem.images.length > 0) {
+      // 如果没有preview_img，用第一张图作为预览
+      previewContainer.innerHTML = `<img src="${currentItem.images[0]}" alt="${currentItem.title} 预览图">`;
+    } else {
+      previewContainer.innerHTML = `<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#999;">暂无预览图</div>`;
+    }
+    
+    // ✅ 渲染详情页图片（三行两列，全图展示）
     const imageGrid = document.getElementById('imageGrid');
     if (currentItem.images && currentItem.images.length > 0) {
+      // 最多显示6张（三行两列）
       const imagesToShow = currentItem.images.slice(0, 6);
       imageGrid.innerHTML = imagesToShow.map(url => 
-        `<img src="${url}" alt="${currentItem.title} 预览图">`
+        `<img src="${url}" alt="${currentItem.title} 详情图">`
       ).join('');
     } else {
-      imageGrid.innerHTML = `<img src="${currentItem.preview_img || 'https://via.placeholder.com/300x160?text=No+Image'}" alt="预览图">`;
+      imageGrid.innerHTML = `<div style="grid-column:span 2;text-align:center;color:#999;padding:20px;">暂无详情图</div>`;
     }
     
     // ✅ 填充文本信息
