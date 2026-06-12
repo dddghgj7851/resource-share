@@ -1,0 +1,131 @@
+/* 基础样式 */
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+background-color: #f5f5f5;
+margin: 0;
+padding: 20px;
+color: #333;
+}
+.container {
+max-width: 1200px;
+margin: 0 auto;
+}
+h1 {
+text-align: center;
+color: #444;
+margin-bottom: 30px;
+}
+/* --- 列表页样式 --- */
+.resource-list {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+gap: 20px;
+}
+.card {
+background: #fff;
+border-radius: 12px;
+box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+overflow: hidden;
+transition: transform 0.3s ease;
+cursor: pointer;
+}
+.card:hover {
+transform: translateY(-5px);
+}
+.card img {
+width: 100%;
+height: 200px; /* 这里控制列表页封面大小 */
+object-fit: cover;
+display: block;
+}
+.card .title {
+padding: 15px;
+font-size: 16px;
+font-weight: bold;
+text-align: center;
+}
+/* --- 详情页样式 --- */
+.detail-header {
+text-align: center;
+margin-bottom: 20px;
+}
+.detail-header h2 {
+margin: 0 0 10px 0;
+font-size: 24px;
+}
+.detail-header p {
+color: #666;
+margin: 0;
+}
+/* 详情页图片网格 */
+.image-gallery {
+display: grid;
+grid-template-columns: repeat(3, 1fr); /* 3列布局 */
+gap: 15px; /* 图片间距 */
+margin-bottom: 30px;
+}
+.image-item img {
+width: 100%;
+aspect-ratio: 1 / 1; /* 保持正方形 */
+object-fit: cover; /* 裁剪填充 */
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* 核心修改：尺寸缩小为原来的 1/4 */
+/* 假设原图是 1000px，现在容器让它显示为 250px 的效果 */
+max-width: 100%;
+height: auto;
+}
+/* 解锁区域 */
+.unlock-box {
+background: #fff;
+padding: 30px;
+border-radius: 12px;
+box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+text-align: center;
+max-width: 600px;
+margin: 0 auto;
+}
+.input-group {
+display: flex;
+gap: 10px;
+margin-bottom: 20px;
+justify-content: center;
+}
+.input-group input {
+padding: 12px 15px;
+border: 1px solid #ddd;
+border-radius: 6px;
+font-size: 16px;
+flex: 1;
+max-width: 300px;
+}
+.btn {
+padding: 12px 25px;
+background: #007bff;
+color: #fff;
+border: none;
+border-radius: 6px;
+font-size: 16px;
+cursor: pointer;
+transition: background 0.3s;
+}
+.btn:hover {
+background: #0056b3;
+}
+.btn-secondary {
+background: #6c757d;
+}
+.btn-secondary:hover {
+background: #545b62;
+}
+.result-box {
+margin-top: 20px;
+padding: 20px;
+background: #e9ecef;
+border-radius: 8px;
+display: none;
+}
+.result-box a {
+color: #007bff;
+word-break: break-all;
+}
