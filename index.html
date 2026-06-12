@@ -28,7 +28,7 @@
         <p id="detailDesc"></p>
       </div>
 
-      <!-- ✅ 详情页图片区域：2行2列，3张图，每张占全屏1/6 -->
+      <!-- ✅ 详情页图片区域：一行三列，每张占1/3宽度 -->
       <div class="image-gallery" id="detailGallery">
         <!-- 3张详情图将由JavaScript动态生成 -->
       </div>
@@ -142,7 +142,7 @@
       document.getElementById('detailTitle').innerText = resource.title;
       document.getElementById('detailDesc').innerText = resource.detail;
       
-      // ✅ 渲染3张详情图（2行2列，每张占全屏1/6）
+      // ✅ 渲染3张详情图（一行三列，每张占1/3宽度）
       const galleryEl = document.getElementById('detailGallery');
       galleryEl.innerHTML = '';
       
