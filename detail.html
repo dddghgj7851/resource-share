@@ -11,7 +11,7 @@
   .back { color: #888; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 18px; }
   .back:hover { color: #333; }
   
-  /* ✅ 新增：图片网格容器（最多6张） */
+  /* ✅ 图片网格（最多6张） */
   .image-grid { 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
@@ -56,15 +56,15 @@
 <div class="box">
   <a class="back" href="index.html">← 返回首页</a>
   
-  <!-- ✅ 新增：图片网格（最多6张） -->
+  <!-- ✅ 图片网格（最多6张） -->
   <div class="image-grid" id="imageGrid">
-    <!-- 图片将通过 JS 动态插入 -->
+    <!-- 图片动态插入 -->
   </div>
   
   <h1 id="title"></h1>
   <div class="desc" id="desc"></div>
 
-  <!-- 赞助按钮 -->
+  <!-- ✅ 赞助按钮（动态跳对应商品） -->
   <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
 
   <!-- 刷新提示 -->
@@ -114,9 +114,8 @@ const params = new URLSearchParams(location.search);
 const id = params.get('id');
 
 // ✅ 配置区
-const API = "https://res.top147.dpdns.org"; // 你的 Worker 地址
-const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377";
-const BACKUP_CODES = { "001": "BACKUP001" };
+const API = "https://res.top147.dpdns.org"; // Worker 地址
+const BACKUP_CODES = { "001": "BACKUP001", "002": "BACKUP002" }; // 备用码
 
 let currentItem = null;
 
@@ -130,34 +129,33 @@ fetch('data.json')
       return;
     }
     
-    // ✅ 新增：渲染图片网格（最多6张）
+    // ✅ 渲染图片（最多6张）
     const imageGrid = document.getElementById('imageGrid');
     if (currentItem.images && currentItem.images.length > 0) {
-      // 只取前6张图片
       const imagesToShow = currentItem.images.slice(0, 6);
       imageGrid.innerHTML = imagesToShow.map(url => 
         `<img src="${url}" alt="${currentItem.title} 预览图">`
       ).join('');
     } else {
-      // 如果没有图片，显示占位符
       imageGrid.innerHTML = `<img src="${currentItem.preview_img || 'https://via.placeholder.com/300x160?text=No+Image'}" alt="预览图">`;
     }
     
-    // 原有逻辑
+    // ✅ 填充文本信息
     title.textContent = currentItem.title;
     desc.innerHTML = currentItem.detail.replace(/\n/g, '<br>');
     payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
   });
 
-// 点击赞助
+// ✅ 点击赞助（跳对应商品）
 payBtn.onclick = () => {
   if (!currentItem) return;
-  window.open(AFD_HOME, '_blank');
+  // 跳转到该资源专属的爱发电商品页
+  window.open(currentItem.afdLink, '_blank');
   refreshTip.style.display = 'block';
   unlockBox.style.display = 'block';
 };
 
-// ✅ 粘贴按钮功能
+// ✅ 粘贴按钮
 async function pasteToken() {
   try {
     const text = await navigator.clipboard.readText();
