@@ -5,286 +5,264 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>资源详情 - Top147</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: #f5f5f5;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  .container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    background: #fff;
-    min-height: 100vh;
-  }
-
-  .header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  /* ✅ 1. 顶部大图（封面图）- 显示头部 */
-  .main-preview {
-    width: 100%;
-    max-width: 800px;
-    height: 500px; /* 大图高度 */
-    margin: 0 auto 30px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    background: #000; /* 黑底防白边 */
-  }
-  
-  .main-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* 保证铺满 */
-    object-position: top; /* ✅ 关键：强制显示图片最上方（头部） */
-    transition: transform 0.3s ease;
-  }
-  
-  .main-preview img:hover {
-    transform: scale(1.02);
-  }
-
-  /* ✅ 2. 标题与描述 */
-  .title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-  
-  .description {
-    color: #666;
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 40px;
-    padding: 0 20px;
-    line-height: 1.8;
-  }
-
-  /* ✅ 3. 详情图区域 - 一行2张大图铺满 */
-  .gallery-section {
-    margin-top: 40px;
-  }
-  
-  .gallery-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #444;
-    border-left: 4px solid #ff6b35;
-    padding-left: 10px;
-  }
-  
-  /* Flex 布局：一行两张，自动滚动 */
-  .image-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* 图间距 */
-    justify-content: center;
-  }
-  
-  .image-item {
-    width: calc(50% - 10px); /* 一行两张，减去间距的一半 */
-    max-width: 580px; /* 限制最大宽度，防止太宽 */
-    aspect-ratio: 16/9; /* 保持宽高比，防止变形 */
-    background: #f0f0f0;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    transition: all 0.3s;
-  }
-  
-  .image-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  }
-  
-  .image-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* ✅ 关键：完整显示原图，不裁剪，不留黑边 */
-    background: #fff; /* 白底衬托透明图 */
-  }
-
-  /* ✅ 4. 底部操作区 */
-  .action-area {
-    margin-top: 50px;
-    padding: 30px;
-    background: #fafafa;
-    border-radius: 12px;
-    text-align: center;
-  }
-  
-  .price {
-    font-size: 24px;
-    color: #ff6b35;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .btn {
-    display: inline-block;
-    background: linear-gradient(135deg,#ff6b35,#ff8a5c);
-    color: #fff;
-    padding: 14px 40px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all .2s;
-  }
-  
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,.3); }
-
-  .tip {
-    margin-top: 20px;
-    font-size: 13px;
-    color: #999;
-  }
-
-  .footer-note {
-    margin-top: 40px;
-    font-size: 13px;
-    color: #aaa;
-    text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-  }
-
-  /* 响应式：手机端依然保持一行两张，但如果屏幕太小则自适应 */
-  @media (max-width: 768px) {
-    .main-preview {
-      height: 300px;
-    }
-    .image-item {
-      width: calc(50% - 10px); /* 手机端依然一行两张 */
-      aspect-ratio: 16/10;
-    }
-    .title {
-      font-size: 22px;
-    }
-  }
+{ margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+background: #f5f5f5;
+color: #333;
+line-height: 1.6;
+}
+.container {
+max-width: 100%;
+margin: 0 auto;
+padding: 20px;
+background: #fff;
+min-height: 100vh;
+}
+.header {
+text-align: center;
+margin-bottom: 30px;
+}
+/* ✅ 1. 顶部大图（封面图）- 显示头部 */
+.main-preview {
+width: 100%;
+max-width: 800px;
+height: 500px; /* 大图高度 */
+margin: 0 auto 30px;
+border-radius: 12px;
+overflow: hidden;
+box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+background: #000; /* 黑底防白边 */
+}
+.main-preview img {
+width: 100%;
+height: 100%;
+object-fit: cover; /* 保证铺满 */
+object-position: top; /* ✅ 关键：强制显示图片最上方（头部） */
+transition: transform 0.3s ease;
+}
+.main-preview img:hover {
+transform: scale(1.02);
+}
+/* ✅ 2. 标题与描述 */
+.title {
+font-size: 28px;
+font-weight: 700;
+color: #222;
+margin-bottom: 15px;
+text-align: center;
+}
+.description {
+color: #666;
+font-size: 16px;
+text-align: center;
+margin-bottom: 40px;
+padding: 0 20px;
+line-height: 1.8;
+}
+/* ✅ 3. 详情图区域 - 一行2张大图铺满 */
+.gallery-section {
+margin-top: 40px;
+}
+.gallery-title {
+font-size: 20px;
+font-weight: 600;
+margin-bottom: 20px;
+color: #444;
+border-left: 4px solid #ff6b35;
+padding-left: 10px;
+}
+/* Flex 布局：一行两张，自动滚动 */
+.image-list {
+display: flex;
+flex-wrap: wrap;
+gap: 20px; /* 图间距 */
+justify-content: center;
+}
+.image-item {
+width: calc(50% - 10px); /* 一行两张，减去间距的一半 */
+max-width: 580px; /* 限制最大宽度，防止太宽 */
+aspect-ratio: 16/9; /* 保持宽高比，防止变形 */
+background: #f0f0f0;
+border-radius: 8px;
+overflow: hidden;
+box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+transition: all 0.3s;
+}
+.image-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.image-item img {
+width: 100%;
+height: 100%;
+object-fit: contain; /* ✅ 关键：完整显示原图，不裁剪，不留黑边 */
+background: #fff; /* 白底衬托透明图 */
+}
+/* ✅ 4. 底部操作区 */
+.action-area {
+margin-top: 50px;
+padding: 30px;
+background: #fafafa;
+border-radius: 12px;
+text-align: center;
+}
+.price {
+font-size: 24px;
+color: #ff6b35;
+font-weight: bold;
+margin-bottom: 20px;
+}
+.btn {
+display: inline-block;
+background: linear-gradient(135deg,#ff6b35,#ff8a5c);
+color: #fff;
+padding: 14px 40px;
+border-radius: 10px;
+text-decoration: none;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+border: none;
+transition: all .2s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,.3); }
+.tip {
+margin-top: 20px;
+font-size: 13px;
+color: #999;
+}
+.footer-note {
+margin-top: 40px;
+font-size: 13px;
+color: #aaa;
+text-align: center;
+padding-top: 20px;
+border-top: 1px solid #eee;
+}
+/* 响应式：手机端依然保持一行两张，但如果屏幕太小则自适应 */
+@media (max-width: 768px) {
+.main-preview {
+height: 300px;
+}
+.image-item {
+width: calc(50% - 10px); /* 手机端依然一行两张 */
+aspect-ratio: 16/10;
+}
+.title {
+font-size: 22px;
+}
+}
 </style>
 </head>
 <body>
-
 <div class="container">
-  <div class="header">
-    <a class="back" href="index.html" style="display:inline-block;margin-bottom:20px;color:#666;text-decoration:none;">← 返回首页</a>
-  </div>
-  
-  <!-- ✅ 1. 顶部大图（封面图）：强制显示头部 -->
-  <div class="main-preview">
-    <img id="mainImage" src="" alt="封面图">
-  </div>
-  
-  <h1 class="title" id="title"></h1>
-  <div class="description" id="desc"></div>
-
-  <!-- ✅ 2. 详情图区域：一行2张，原尺寸全屏展示 -->
-  <div class="gallery-section">
-    <div class="gallery-title">🖼️ 高清原图预览</div>
-    <div class="image-list" id="imageList">
-      <!-- 图片动态插入 -->
-    </div>
-  </div>
-
-  <!-- ✅ 3. 底部操作区 -->
-  <div class="action-area">
-    <div class="price" id="priceText"></div>
-    <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
-    
-    <!-- 解锁区域 -->
-    <div id="unlockBox" style="margin-top:20px;display:none;">
-      <input id="tokenInput" type="text" placeholder="输入订单号解锁" style="padding:8px;width:250px;border:1px solid #ddd;border-radius:4px;margin-right:10px;">
-      <button class="btn" onclick="doUnlock()" style="padding:8px 20px;font-size:14px;">解锁</button>
-      <p style="margin-top:10px;font-size:12px;color:#999;">支付完成后，输入订单号即可查看网盘地址</p>
-    </div>
-  </div>
+<div class="header">
+<a class="back" href="index.html" style="display:inline-block;margin-bottom:20px;color:#666;text-decoration:none;">← 返回首页</a>
 </div>
-
+<div class="main-preview">
+<img id="mainImage" src="" alt="封面图">
+</div>
+<div class="description" id="desc"></div>
+<div class="gallery-section">
+<div class="gallery-title">🖼️ 高清原图预览</div>
+<div class="image-list" id="imageList">
+</div>
+</div>
+<div class="action-area">
+<div class="price" id="priceText"></div>
+<button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
+<!-- 解锁区域 -->
+<div id="unlockBox" style="margin-top:20px;display:none;">
+  <input id="tokenInput" type="text" placeholder="输入订单号解锁" style="padding:8px;width:250px;border:1px solid #ddd;border-radius:4px;margin-right:10px;">
+  <button class="btn" onclick="doUnlock()" style="padding:8px 20px;font-size:14px;">解锁</button>
+  <p style="margin-top:10px;font-size:12px;color:#999;">支付完成后，输入订单号即可查看网盘地址
+</div>
+</div>
+</div>
 <div class="footer-note">
-  本站为个人整理分享，通过 <a href="https://afdian.net/" target="_blank">爱发电</a> 接受赞助支持，非商业售卖。
+本站为个人整理分享，通过 <a href="https://afdian.net/" target="_blank">爱发电</a> 接受赞助支持，非商业售卖。
 </div>
-
 <script>
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
-
 // ✅ 配置区
 const API = "https://res.top147.dpdns.org"; // Worker 地址
 const BACKUP_CODES = { "001": "BACKUP001", "002": "BACKUP002" }; // 备用码
-
 let currentItem = null;
-
 // 加载资源
 fetch('data.json')
-  .then(r => r.json())
-  .then(list => {
-    currentItem = list.find(x => x.id === id);
-    if (!currentItem) {
-      document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>';
-      return;
-    }
-    
-    // ✅ 渲染顶部大图（封面）：强制显示头部
-    const mainImg = document.getElementById('mainImage');
-    // 优先使用 preview_img，如果没有则用第一张详情图
-    mainImg.src = currentItem.preview_img || currentItem.images?.[0] || 'https://via.placeholder.com/800x500?text=No+Image';
-    
-    // ✅ 渲染标题和描述
-    document.getElementById('title').textContent = currentItem.title;
-    document.getElementById('desc').innerHTML = currentItem.detail.replace(/\n/g, '<br>');
-    document.getElementById('priceText').textContent = `¥${currentItem.price} 赞助获取`;
-    
-    // ✅ 渲染详情图列表：一行2张，原尺寸展示
-    const imageList = document.getElementById('imageList');
-    if (currentItem.images && currentItem.images.length > 0) {
-      imageList.innerHTML = currentItem.images.map(url => 
-        `<div class="image-item">
-          <img src="${url}" alt="详情图">
-        </div>`
-      ).join('');
-    } else {
-      imageList.innerHTML = `<div style="text-align:center;color:#999;width:100%;">暂无更多图片</div>`;
-    }
-  });
+.then(r => r.json())
+.then(list => {
+currentItem = list.find(x => x.id === id);
+if (!currentItem) {
+document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">未找到该资源';
+return;
+}
+// ✅ 渲染顶部大图（封面）：强制显示头部
+const mainImg = document.getElementById('mainImage');
+// 优先使用 preview_img，如果没有则用第一张详情图
+mainImg.src = currentItem.preview_img || currentItem.images?.[0] || 'https://via.placeholder.com/800x500?text=No+Image';
 
+// ✅ 渲染标题和描述
+document.getElementById('title').textContent = currentItem.title;
+document.getElementById('desc').innerHTML = currentItem.detail.replace(/\n/g, '');
+document.getElementById('priceText').textContent = `¥${currentItem.price} 赞助获取`;
+
+// ✅ 渲染详情图列表：一行2张，原尺寸展示
+const imageList = document.getElementById('imageList');
+if (currentItem.images && currentItem.images.length > 0) {
+  imageList.innerHTML = currentItem.images.map(url => 
+    `<div class="image-item">
+      <img src="${url}" alt="详情图">
+    </div>`
+  ).join('');
+} else {
+  imageList.innerHTML = `<div style="text-align:center;color:#999;width:100%;">暂无更多图片</div>`;
+}
+});
 // ✅ 点击赞助
 document.getElementById('payBtn').onclick = () => {
-  if (!currentItem) return;
-  window.open(currentItem.afdLink, '_blank');
-  document.getElementById('unlockBox').style.display = 'block';
+if (!currentItem) return;
+window.open(currentItem.afdLink, '_blank');
+document.getElementById('unlockBox').style.display = 'block';
 };
-
 // ✅ 解锁逻辑
 async function doUnlock() {
-  const token = document.getElementById('tokenInput').value.trim().toUpperCase();
-  if (!token) {
-    alert('请输入订单号');
-    return;
-  }
+const token = document.getElementById('tokenInput').value.trim().toUpperCase();
+if (!token) {
+alert('请输入订单号');
+return;
+}
+try {
+const res = await fetch(${API}/unlock, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ token })
+});
+const data = await res.json();
 
-  try {
-    const res = await fetch(`${API}/unlock`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token })
-    });
-
-    const data = await res.json();
-    
-    if (data.ok) {
-      // 这里简单用 alert 显示结果，也可以改成页面内的弹窗
-      const msg = `🎉 网盘地址：${data.panUrl}\n🔑 提取码：${data.panCode}`;
-      alert(msg);
-      // 也可以自动复制到剪贴板
+if (data.ok) {
+  // 这里简单用 alert 显示结果，也可以改成页面内的弹窗
+  const msg = `🎉 网盘地址：${data.panUrl}\n🔑 提取码：${data.panCode}`;
+  alert(msg);
+  // 也可以自动复制到剪贴板
+  navigator.clipboard.writeText(`${data.panUrl} 提取码: ${data.panCode}`);
+  alert('已复制到剪贴板！');
+} else {
+  alert('❌ ' + data.msg);
+}
+} catch (err) {
+alert('⚠️ 网络错误，请检查控制台');
+console.error(err);
+}
+}
+// 回车解锁
+document.addEventListener('keydown', e => {
+if (e.key === 'Enter' && document.getElementById('unlockBox').style.display === 'block') {
+doUnlock();
+}
+});
+</script>
+</body>
+</html>
