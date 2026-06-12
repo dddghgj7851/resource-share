@@ -24,7 +24,7 @@
   .email a { color: #ff6b35; text-decoration: none; }
   #unlockBox { margin-top: 20px; display: none; }
   #unlockBox p { font-size: 14px; color: #666; margin-bottom: 10px; }
-  #tokenInput { width: 200px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 2px; }
+  #tokenInput { width: 300px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 1px; }
   #refreshTip { margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; }
   #offlineBox { margin-top: 20px; padding: 15px; background: #f8d7da; color: #721c24; border-radius: 8px; display: none; }
   /* ✅ 恢复你提到的备案说明样式 */
@@ -45,13 +45,13 @@
 
   <!-- 刷新提示 -->
   <div id="refreshTip">
-    ✅ 支付完成后，请 <strong>刷新本页面</strong>，然后输入订单号后8位解锁。
+    ✅ 支付完成后，请 <strong>刷新本页面</strong>，然后输入完整订单号解锁。
   </div>
 
   <!-- 解锁区域 -->
   <div id="unlockBox">
-    <p>支付成功后，请输入 <strong>订单号后8位</strong>：</p>
-    <input id="tokenInput" type="text" placeholder="例如：A1B2C3D4" maxlength="8">
+    <p>支付成功后，请输入 <strong>完整订单号</strong>：</p>
+    <input id="tokenInput" type="text" placeholder="例如：AFD202401011234567890">
     <button class="btn" onclick="doUnlock()">解锁</button>
     <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
   </div>
@@ -71,7 +71,7 @@
   </div>
 
   <div class="tip">
-    如无法自动识别，请手动输入订单号后8位
+    如无法自动识别，请手动输入完整订单号
   </div>
 
   <div class="email">
@@ -91,7 +91,7 @@ const params = new URLSearchParams(location.search);
 const id = params.get('id');
 
 // ✅ 配置区
-const API = "https://res.top147.dpdns.org";
+const API = "https://res.top147.dpdns.org"; // 你的 Worker 地址
 const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377";
 const BACKUP_CODES = { "001": "BACKUP001" };
 
@@ -120,25 +120,24 @@ payBtn.onclick = () => {
   unlockBox.style.display = 'block';
 };
 
-// ✅ 粘贴按钮功能
+// ✅ 粘贴按钮功能（直接使用完整订单号）
 async function pasteToken() {
   try {
     const text = await navigator.clipboard.readText();
     let clean = text.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (clean.startsWith('AFD')) clean = clean.substring(3);
-    if (clean.length > 8) clean = clean.slice(-8);
-    tokenInput.value = clean;
+    tokenInput.value = clean; // ✅ 不再截取后8位
   } catch (err) {
-    alert('粘贴失败，请手动输入订单号后8位');
+    alert('粘贴失败，请手动输入完整订单号');
     tokenInput.focus();
   }
 }
 
-// ✅ 主解锁逻辑（只传 token）
+// ✅ 主解锁逻辑（接受完整订单号）
 async function doUnlock() {
   const token = tokenInput.value.trim().toUpperCase();
-  if (!token || token.length !== 8) {
-    alert('请输入8位订单号');
+  if (!token) {
+    alert('请输入订单号');
     return;
   }
 
@@ -159,6 +158,7 @@ async function doUnlock() {
       unlockBox.style.display = 'none';
     } else {
       alert('❌ ' + data.msg);
+      offlineBox.style.display = 'block';
     }
   } catch (err) {
     alert('⚠️ 网络错误，请检查控制台');
