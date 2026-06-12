@@ -120,6 +120,47 @@
       display: block;
     }
 
+    /* ==================== 赞助区域样式 ==================== */
+    .sponsor-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .sponsor-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .sponsor-desc {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .sponsor-btn {
+      display: inline-block;
+      background: #fff;
+      color: #667eea;
+      padding: 12px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .sponsor-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
     /* ==================== 解锁区域样式 ==================== */
     .unlock-box {
       background: #fff;
@@ -246,6 +287,13 @@
         <p id="detailDesc"></p>
       </div>
 
+      <!-- ✅ 赞助区域：赞助 ¥xx 即可获取绝美私房 -->
+      <div class="sponsor-box" id="sponsorBox">
+        <div class="sponsor-title">💎 赞助 ¥<span id="sponsorPrice"></span> 即可获取绝美私房</div>
+        <div class="sponsor-desc">支持创作者，解锁高清无水印原图资源</div>
+        <a href="#" id="sponsorLink" target="_blank" class="sponsor-btn">立即赞助</a>
+      </div>
+
       <!-- ✅ 详情页图片区域：禁止裁剪，完整显示原图 -->
       <div class="image-gallery" id="detailGallery">
         <!-- 3张详情图将由JavaScript动态生成 -->
@@ -359,6 +407,10 @@
       // 设置标题和描述
       document.getElementById('detailTitle').innerText = resource.title;
       document.getElementById('detailDesc').innerText = resource.detail;
+      
+      // ✅ 设置赞助区域
+      document.getElementById('sponsorPrice').innerText = resource.price;
+      document.getElementById('sponsorLink').href = resource.afdLink;
       
       // ✅ 渲染3张详情图（禁止裁剪，完整显示原图）
       const galleryEl = document.getElementById('detailGallery');
