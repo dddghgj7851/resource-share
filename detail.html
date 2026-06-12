@@ -136,14 +136,9 @@ async function pasteToken() {
 
 // ✅ 主解锁逻辑（只传 token）
 async function doUnlock() {
-  const token = tokenInput.value.trim();
-  if (!token) {
-    alert('请输入订单号后8位');
-    return;
-  }
-
-  if (token.length !== 8) {
-    alert('订单号后8位必须是8位字符');
+  const token = tokenInput.value.trim().toUpperCase();
+  if (!token || token.length !== 8) {
+    alert('请输入8位订单号');
     return;
   }
 
@@ -155,7 +150,7 @@ async function doUnlock() {
     });
 
     const data = await res.json();
-
+    
     if (data.ok) {
       link.href = data.panUrl;
       link.textContent = data.panUrl;
@@ -164,11 +159,10 @@ async function doUnlock() {
       unlockBox.style.display = 'none';
     } else {
       alert('❌ ' + data.msg);
-      offlineBox.style.display = 'block';
     }
   } catch (err) {
-    alert('⚠️ 网络连接失败，请稍后再试');
-    offlineBox.style.display = 'block';
+    alert('⚠️ 网络错误，请检查控制台');
+    console.error(err);
   }
 }
 
