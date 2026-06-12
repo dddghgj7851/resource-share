@@ -24,7 +24,7 @@
   .email a { color: #ff6b35; text-decoration: none; }
   #unlockBox { margin-top: 20px; display: none; }
   #unlockBox p { font-size: 14px; color: #666; margin-bottom: 10px; }
-  #tokenInput { width: 300px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 2px; }
+  #tokenInput { width: 200px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 2px; }
   #refreshTip { margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; }
   #offlineBox { margin-top: 20px; padding: 15px; background: #f8d7da; color: #721c24; border-radius: 8px; display: none; }
   #debugInfo { margin-top: 10px; padding: 10px; background: #e9ecef; color: #495057; border-radius: 6px; display: none; font-family: monospace; font-size: 12px; }
@@ -46,186 +46,11 @@
 
   <!-- 刷新提示 -->
   <div id="refreshTip">
-    ✅ 支付完成后，请 <strong>刷新本页面</strong>，然后粘贴订单号解锁。
+    ✅ 支付完成后，请 <strong>刷新本页面</strong>，然后粘贴订单号后8位解锁。
   </div>
 
   <!-- 解锁区域 -->
   <div id="unlockBox">
-    <p>支付成功后，请粘贴 <strong>完整订单号</strong>：</p>
-    <input id="tokenInput" type="text" placeholder="点击右侧「粘贴」按钮">
-    <button class="btn" onclick="doUnlock()">解锁</button>
-    <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
-    <div id="debugInfo"></div>
-  </div>
-
-  <!-- 离线备用通道 -->
-  <div id="offlineBox">
-    <p><strong>⚠️ 在线解锁失败</strong></p>
-    <p>请使用备用解锁码，或联系站长。</p>
-    <input id="backupInput" type="text" placeholder="备用解锁码" style="width:200px;padding:8px;margin-right:8px;">
-    <button class="btn" onclick="doBackupUnlock()">备用解锁</button>
-  </div>
-
-  <!-- 结果 -->
-  <div class="result" id="result">
-    <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
-    <p>🔑 提取码：<strong id="code"></strong></p>
-  </div>
-
-  <div class="tip">
-    如无法自动识别，请手动输入订单号后 8 位
-  </div>
-
-  <div class="email">
-    问题反馈：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
-  </div>
-</div>
-
-<!-- ✅ 恢复你提到的备案说明段落 -->
-<div class="footer-note">
-  本站为个人整理分享，通过
-  <a href="https://afdian.net/@你的ID" target="_blank">爱发电</a>
-  接受赞助支持，非商业售卖。
-</div>
-
-<script>
-const params = new URLSearchParams(location.search);
-const id = params.get('id');
-
-// ✅ 配置区（请替换为你的真实信息）
-const API = "https://resource-api.plmplm999.workers.dev";
-const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377"; // 若无法访问，改为 https://afdian.net/@你的ID
-const BACKUP_CODES = { "001": "BACKUP001" }; // 备用解锁码（可自定义）
-
-let currentItem = null;
-
-// 加载资源
-fetch('data.json')
-  .then(r => r.json())
-  .then(list => {
-    currentItem = list.find(x => x.id === id);
-    if (!currentItem) {
-      document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>';
-      return;
-    }
-    hero.src = currentItem.preview_img;
-    title.textContent = currentItem.title;
-    desc.innerHTML = currentItem.detail.replace(/\n/g, '<br>');
-    payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
-  });
-
-// 点击赞助
-payBtn.onclick = () => {
-  if (!currentItem) return;
-  window.open(AFD_HOME, '_blank');
-  refreshTip.style.display = 'block';
-  unlockBox.style.display = 'block';
-};
-
-// ✅ 粘贴按钮功能
-async function pasteToken() {
-  try {
-    const text = await navigator.clipboard.readText();
-    tokenInput.value = text.trim().toUpperCase();
-    showDebug('已从剪贴板读取：' + text);
-  } catch (err) {
-    alert('粘贴失败，请手动粘贴（Ctrl+V）');
-    tokenInput.focus();
-  }
-}
-
-// ✅ 自动提取订单号后 8 位（支持多种格式）
-function extractToken(orderId) {
-  if (!orderId) return '';
-  let clean = orderId.replace(/[^A-Z0-9]/gi, '');
-  if (clean.startsWith('AFD')) clean = clean.substring(3);
-  if (clean.length >= 8) return clean.slice(-8);
-  return clean;
-}
-
-// ✅ 主解锁逻辑（含KV冲突提示）
-async function doUnlock() {
-  let input = tokenInput.value.trim();
-  if (!input) {
-    alert('请粘贴订单号');
-    return;
-  }
-
-  const token = extractToken(input);
-  showDebug('原始输入：' + input);
-  showDebug('提取后 token：' + token);
-
-  if (token.length !== 8) {
-    alert('订单号格式错误，请确保是 8 位字符');
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API}/unlock`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ resId: id, token })
-    });
-
-    const data = await res.json();
-    showDebug('API 响应：' + JSON.stringify(data));
-
-    if (data.ok) {
-      showResult(data);
-    } else {
-      // ✅ 关键提示：KV手动设置token可能导致冲突
-      const kvConflictHint = `
-        ⚠️ 解锁失败：${data.msg}
-        \n\n可能原因：
-        1. 订单号错误（请核对支付成功页的订单号后8位）
-        2. CF KV中手动设置过token（请删除手动添加的token，让Worker自动生成）
-        3. 资源ID不匹配（当前资源ID：${id}）
-      `;
-      showDebug(kvConflictHint);
-      alert(kvConflictHint);
-      offlineBox.style.display = 'block';
-    }
-  } catch (err) {
-    showDebug('❌ 网络错误：' + err.message);
-    alert('⚠️ 网络连接失败，请稍后再试');
-    offlineBox.style.display = 'block';
-  }
-}
-
-// ✅ 备用解锁
-function doBackupUnlock() {
-  const backupToken = backupInput.value.trim();
-  if (backupToken === BACKUP_CODES[id]) {
-    showResult({
-      panUrl: currentItem.panUrl,
-      panCode: currentItem.panCode
-    });
-  } else {
-    alert('备用码错误，请联系站长');
-  }
-}
-
-// 显示调试信息
-function showDebug(msg) {
-  debugInfo.style.display = 'block';
-  debugInfo.innerHTML += msg + '<br>';
-}
-
-// 显示结果
-function showResult(data) {
-  link.href = data.panUrl;
-  link.textContent = data.panUrl;
-  code.textContent = data.panCode;
-  result.style.display = 'block';
-  unlockBox.style.display = 'none';
-  offlineBox.style.display = 'none';
-  debugInfo.style.display = 'none';
-}
-
-// 回车解锁
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && unlockBox.style.display === 'block') doUnlock();
-});
-</script>
-</body>
-</html>
+    <p>支付成功后，请粘贴 <strong>订单号后8位</strong>：</p>
+    <input id="tokenInput" type="text" placeholder="例如：A1B2C3D4" maxlength="8">
+    <button class="btn" onclick="doUnlock()">解锁
