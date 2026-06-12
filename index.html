@@ -68,6 +68,168 @@
       text-align: center;
     }
 
+    /* ==================== 详情页样式 ==================== */
+    .detail-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .detail-header h2 {
+      margin: 0 0 15px 0;
+      font-size: 28px;
+      color: #222;
+    }
+
+    .detail-header p {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ✅ 详情页图片：禁止裁剪，完整显示原图 */
+    .image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 40px;
+      justify-content: center;
+    }
+
+    .image-item {
+      flex: 1;
+      min-width: 300px; /* 最小宽度，防止过窄 */
+      max-width: calc(33.333% - 14px); /* 一行三列，减去间距 */
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px; /* 内边距，防止图片贴边 */
+    }
+
+    .image-item img {
+      max-width: 100%;
+      max-height: 500px; /* 限制最大高度，防止过高 */
+      width: auto;
+      height: auto;
+      object-fit: contain; /* ✅ 关键：禁止裁剪，完整显示原图 */
+      display: block;
+    }
+
+    /* ==================== 赞助区域样式 ==================== */
+    .sponsor-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .sponsor-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .sponsor-desc {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .sponsor-btn {
+      display: inline-block;
+      background: #fff;
+      color: #667eea;
+      padding: 12px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .sponsor-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    /* ==================== 解锁区域样式 ==================== */
+    .unlock-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .input-group input {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      flex: 1;
+      max-width: 300px;
+      min-width: 200px;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background: #545b62;
+    }
+
+    /* 结果显示区域 */
+    .result-box {
+      margin-top: 20px;
+      padding: 20px;
+      background: #e9ecef;
+      border-radius: 8px;
+      display: none;
+      text-align: left;
+    }
+
+    .result-box a {
+      color: #007bff;
+      word-break: break-all;
+      display: block;
+      margin-bottom: 10px;
+    }
+
     /* ✅ Footer Note 样式 */
     .footer-note {
       text-align: center;
@@ -86,28 +248,106 @@
     .footer-note a:hover {
       text-decoration: underline;
     }
+
+    /* ==================== 响应式设计 ==================== */
+    @media (max-width: 768px) {
+      .image-item {
+        max-width: 100%; /* 手机端单列 */
+      }
+      
+      .input-group {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .input-group input {
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>📦 精品资源分享</h1>
-  
-  <div class="resource-list" id="resourceList">
-    <!-- 资源卡片将由JavaScript动态生成 -->
+  <!-- ==================== 主页：资源列表 ==================== -->
+  <div id="homePage">
+    <h1>📦 精品资源分享</h1>
+    
+    <div class="resource-list" id="resourceList">
+      <!-- 资源卡片将由JavaScript动态生成 -->
+    </div>
   </div>
 
-  <div class="footer-note">
-    本站为个人整理分享，通过 <a href="https://afdian.net/" target="_blank">爱发电</a> 接受赞助支持，非商业售卖。
+  <!-- ==================== 详情页：单个资源 ==================== -->
+  <div id="detailPage" style="display:none;">
+    <div class="container">
+      <!-- 资源标题和描述 -->
+      <div class="detail-header">
+        <h2 id="detailTitle"></h2>
+        <p id="detailDesc"></p>
+      </div>
+
+      <!-- ✅ 赞助区域：赞助 ¥xx 即可获取绝美私房 -->
+      <div class="sponsor-box" id="sponsorBox">
+        <div class="sponsor-title">💎 赞助 ¥<span id="sponsorPrice"></span> 即可获取绝美私房</div>
+        <div class="sponsor-desc">支持创作者，解锁高清无水印原图资源</div>
+        <a href="#" id="sponsorLink" target="_blank" class="sponsor-btn">立即赞助</a>
+      </div>
+
+      <!-- ✅ 详情页图片区域：禁止裁剪，完整显示原图 -->
+      <div class="image-gallery" id="detailGallery">
+        <!-- 3张详情图将由JavaScript动态生成 -->
+      </div>
+
+      <!-- 解锁区域 -->
+      <div class="unlock-box">
+        <div class="input-group">
+          <input type="text" id="tokenInput" placeholder="请输入订单号（纯数字）">
+          <button class="btn" onclick="doUnlock()">🔓 解锁网盘地址</button>
+          <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
+        </div>
+        <p style="font-size:14px; color:#999; margin-top:15px;">
+          💡 赞助后请勿刷新页面，直接输入订单号即可解锁
+        </p>
+        
+        <!-- 结果显示区域 -->
+        <div class="result-box" id="resultBox">
+          <strong>🎁 网盘地址：</strong>
+          <a href="#" id="panLink" target="_blank"></a>
+          <strong>🔑 提取码：</strong>
+          <span id="panCode"></span>
+        </div>
+      </div>
+
+      <!-- ✅ Footer Note -->
+      <div class="footer-note">
+        本站为个人整理分享，通过 <a href="https://afdian.net/" target="_blank">爱发电</a> 接受赞助支持，非商业售卖。
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
   // ==========================================
+  // ✅ 配置区域
+  // ==========================================
+  const API_URL = "https://res.top147.dpdns.org"; // 你的Worker接口地址
+  
+  // ==========================================
   // ✅ 页面初始化
   // ==========================================
   document.addEventListener('DOMContentLoaded', () => {
-    renderHomePage();
+    // 检查URL参数，判断是否直接进入详情页
+    const params = new URLSearchParams(window.location.search);
+    const resourceId = params.get('id');
+    
+    if (resourceId) {
+      // 直接进入详情页
+      showDetail(resourceId);
+    } else {
+      // 显示主页列表
+      renderHomePage();
+    }
   });
 
   // ==========================================
@@ -127,7 +367,7 @@
         card.className = 'card';
         card.onclick = () => {
           // 跳转到详情页，并传递ID参数
-          window.location.href = `details.html?id=${resource.id}`;
+          window.location.href = `index.html?id=${resource.id}`;
         };
         
         card.innerHTML = `
@@ -140,6 +380,111 @@
     } catch (error) {
       console.error('加载数据失败:', error);
       document.getElementById('resourceList').innerHTML = '<p style="text-align:center;color:#999;">数据加载失败，请刷新重试</p>';
+    }
+  }
+
+  // ==========================================
+  // ✅ 详情页相关函数
+  // ==========================================
+  async function showDetail(id) {
+    try {
+      // 切换页面显示
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('detailPage').style.display = 'block';
+      
+      // 从data.json加载数据
+      const response = await fetch('data.json');
+      const resources = await response.json();
+      
+      // 查找资源
+      const resource = resources.find(r => r.id === id);
+      if (!resource) {
+        alert('资源不存在！');
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // 设置标题和描述
+      document.getElementById('detailTitle').innerText = resource.title;
+      document.getElementById('detailDesc').innerText = resource.detail;
+      
+      // ✅ 设置赞助区域
+      document.getElementById('sponsorPrice').innerText = resource.price;
+      document.getElementById('sponsorLink').href = resource.afdLink;
+      
+      // ✅ 渲染3张详情图（禁止裁剪，完整显示原图）
+      const galleryEl = document.getElementById('detailGallery');
+      galleryEl.innerHTML = '';
+      
+      resource.images.forEach(imgUrl => {
+        const div = document.createElement('div');
+        div.className = 'image-item';
+        div.innerHTML = `<img src="${imgUrl}" alt="详情图" loading="lazy">`;
+        galleryEl.appendChild(div);
+      });
+      
+      // 重置解锁区域
+      document.getElementById('resultBox').style.display = 'none';
+      document.getElementById('tokenInput').value = '';
+    } catch (error) {
+      console.error('加载详情失败:', error);
+      alert('加载详情失败，请返回重试');
+    }
+  }
+
+  // ==========================================
+  // ✅ 解锁相关函数
+  // ==========================================
+  async function pasteToken() {
+    try {
+      const text = await navigator.clipboard.readText();
+      const clean = text.trim().replace(/[^0-9]/g, '');
+      document.getElementById('tokenInput').value = clean;
+    } catch (err) {
+      alert('无法读取剪贴板，请手动输入订单号');
+      document.getElementById('tokenInput').focus();
+    }
+  }
+
+  async function doUnlock() {
+    const token = document.getElementById('tokenInput').value.trim();
+    if (!token) {
+      alert('请输入订单号！');
+      return;
+    }
+    
+    const btn = event.target;
+    const originalText = btn.innerText;
+    btn.innerText = '查询中...';
+    btn.disabled = true;
+    
+    try {
+      const response = await fetch(`${API_URL}/unlock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+      
+      const result = await response.json();
+      
+      if (result.ok) {
+        // 显示解锁结果
+        document.getElementById('panLink').innerText = result.panUrl;
+        document.getElementById('panLink').href = result.panUrl;
+        document.getElementById('panCode').innerText = result.panCode;
+        document.getElementById('resultBox').style.display = 'block';
+        
+        // 滚动到结果区域
+        document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        alert(`❌ 解锁失败：${result.msg || '订单号无效'}`);
+      }
+    } catch (error) {
+      console.error('解锁请求失败:', error);
+      alert('⚠️ 网络错误，请检查网络连接后重试');
+    } finally {
+      btn.innerText = originalText;
+      btn.disabled = false;
     }
   }
 </script>
