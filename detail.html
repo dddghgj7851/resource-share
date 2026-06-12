@@ -1,141 +1,219 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>资源详情</title>
+<title>资源详情 - Top147</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; padding: 20px; }
-  .box { max-width: 720px; margin: 40px auto; background: #fff; border-radius: 14px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,.05); }
-  .back { color: #888; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 18px; }
-  .back:hover { color: #333; }
-  
-  /* ✅ 预览图（顶部大图）- 显示最上方内容 */
-  .preview-container {
-    width: 100%;
-    height: 320px; /* 更高的高度 */
-    margin-bottom: 24px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #f0f0f0;
-    position: relative;
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
   }
-  .preview-container img {
+  
+  .container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    min-height: 100vh;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  /* ✅ 1. 顶部大图（封面图）- 显示头部 */
+  .main-preview {
+    width: 100%;
+    max-width: 800px;
+    height: 500px; /* 大图高度 */
+    margin: 0 auto 30px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    background: #000; /* 黑底防白边 */
+  }
+  
+  .main-preview img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: top; /* ✅ 关键：显示图片最上方 */
-    transition: transform 0.3s;
+    object-fit: cover; /* 保证铺满 */
+    object-position: top; /* ✅ 关键：强制显示图片最上方（头部） */
+    transition: transform 0.3s ease;
   }
-  .preview-container img:hover {
+  
+  .main-preview img:hover {
     transform: scale(1.02);
   }
-  
-  /* ✅ 详情页图片网格 - 三行两列，全图展示 */
-  .image-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); /* ✅ 两列 */
-    grid-template-rows: repeat(3, 140px); /* ✅ 三行，固定高度 */
-    gap: 12px; 
-    margin-bottom: 24px; 
-  }
-  .image-grid img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: contain; /* ✅ 全图展示，不裁剪 */
-    border-radius: 8px; 
-    background: #f8f8f8; /* ✅ 浅灰背景，避免透明图看不清 */
-    border: 1px solid #e8e8e8;
-    transition: transform 0.2s;
-    padding: 4px; /* ✅ 内边距，让图片不贴边 */
-  }
-  .image-grid img:hover {
-    transform: scale(1.03);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+  /* ✅ 2. 标题与描述 */
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 15px;
+    text-align: center;
   }
   
-  h1 { margin: 20px 0 14px; color: #222; font-size: 24px; }
-  .desc { color: #555; line-height: 1.8; margin-bottom: 28px; font-size: 15px; }
-  .btn { display: inline-block; background: linear-gradient(135deg,#ff6b35,#ff8a5c); color: #fff; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+  .description {
+    color: #666;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 0 20px;
+    line-height: 1.8;
+  }
+
+  /* ✅ 3. 详情图区域 - 一行2张大图铺满 */
+  .gallery-section {
+    margin-top: 40px;
+  }
+  
+  .gallery-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #444;
+    border-left: 4px solid #ff6b35;
+    padding-left: 10px;
+  }
+  
+  /* Flex 布局：一行两张，自动滚动 */
+  .image-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* 图间距 */
+    justify-content: center;
+  }
+  
+  .image-item {
+    width: calc(50% - 10px); /* 一行两张，减去间距的一半 */
+    max-width: 580px; /* 限制最大宽度，防止太宽 */
+    aspect-ratio: 16/9; /* 保持宽高比，防止变形 */
+    background: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+  }
+  
+  .image-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  
+  .image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* ✅ 关键：完整显示原图，不裁剪，不留黑边 */
+    background: #fff; /* 白底衬托透明图 */
+  }
+
+  /* ✅ 4. 底部操作区 */
+  .action-area {
+    margin-top: 50px;
+    padding: 30px;
+    background: #fafafa;
+    border-radius: 12px;
+    text-align: center;
+  }
+  
+  .price {
+    font-size: 24px;
+    color: #ff6b35;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg,#ff6b35,#ff8a5c);
+    color: #fff;
+    padding: 14px 40px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+  }
+  
   .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,.3); }
-  .btn-secondary { background: #6c757d; }
-  .btn-secondary:hover { background: #5a6268; }
-  .result { margin-top: 24px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 20px; border-radius: 10px; display: none; }
-  .result a { color: #2e7d32; font-weight: 600; word-break: break-all; }
-  .tip { margin-top: 20px; font-size: 13px; color: #888; text-align: center; }
-  .email { margin-top: 30px; font-size: 13px; color: #666; text-align: center; }
-  .email a { color: #ff6b35; text-decoration: none; }
-  #unlockBox { margin-top: 20px; display: none; }
-  #unlockBox p { font-size: 14px; color: #666; margin-bottom: 10px; }
-  #tokenInput { width: 300px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 1px; }
-  #refreshTip { margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; }
-  #offlineBox { margin-top: 20px; padding: 15px; background: #f8d7da; color: #721c24; border-radius: 8px; display: none; }
-  .footer-note { margin-top:40px;font-size:13px;color:#aaa;text-align:center; }
-  .footer-note a { color:#ff6b35; text-decoration: none; }
+
+  .tip {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #999;
+  }
+
+  .footer-note {
+    margin-top: 40px;
+    font-size: 13px;
+    color: #aaa;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+
+  /* 响应式：手机端依然保持一行两张，但如果屏幕太小则自适应 */
+  @media (max-width: 768px) {
+    .main-preview {
+      height: 300px;
+    }
+    .image-item {
+      width: calc(50% - 10px); /* 手机端依然一行两张 */
+      aspect-ratio: 16/10;
+    }
+    .title {
+      font-size: 22px;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="box">
-  <a class="back" href="index.html">← 返回首页</a>
-  
-  <!-- ✅ 预览图（顶部大图）- 显示最上方内容 -->
-  <div class="preview-container" id="previewContainer">
-    <!-- 预览图动态插入 -->
+<div class="container">
+  <div class="header">
+    <a class="back" href="index.html" style="display:inline-block;margin-bottom:20px;color:#666;text-decoration:none;">← 返回首页</a>
   </div>
   
-  <!-- ✅ 详情页图片网格（三行两列，全图展示） -->
-  <div class="image-grid" id="imageGrid">
-    <!-- 详情图动态插入 -->
+  <!-- ✅ 1. 顶部大图（封面图）：强制显示头部 -->
+  <div class="main-preview">
+    <img id="mainImage" src="" alt="封面图">
   </div>
   
-  <h1 id="title"></h1>
-  <div class="desc" id="desc"></div>
+  <h1 class="title" id="title"></h1>
+  <div class="description" id="desc"></div>
 
-  <!-- ✅ 赞助按钮（动态跳对应商品） -->
-  <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
-
-  <!-- 刷新提示 -->
-  <div id="refreshTip">
-    ✅ 支付完成后，请 <strong>返回本页面，禁止刷新页面</strong>，然后输入完整订单号解锁。
+  <!-- ✅ 2. 详情图区域：一行2张，原尺寸全屏展示 -->
+  <div class="gallery-section">
+    <div class="gallery-title">🖼️ 高清原图预览</div>
+    <div class="image-list" id="imageList">
+      <!-- 图片动态插入 -->
+    </div>
   </div>
 
-  <!-- 解锁区域 -->
-  <div id="unlockBox">
-    <p>支付成功后，请输入 <strong>完整订单号</strong>：</p>
-    <input id="tokenInput" type="text" placeholder="例如：202508171646131345676464102">
-    <button class="btn" onclick="doUnlock()">解锁</button>
-    <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
-  </div>
-
-  <!-- 离线备用通道 -->
-  <div id="offlineBox">
-    <p><strong>⚠️ 在线解锁失败</strong></p>
-    <p>请使用备用解锁码，或联系站长。</p>
-    <input id="backupInput" type="text" placeholder="备用解锁码" style="width:200px;padding:8px;margin-right:8px;">
-    <button class="btn" onclick="doBackupUnlock()">备用解锁</button>
-  </div>
-
-  <!-- 结果 -->
-  <div class="result" id="result">
-    <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
-    <p>🔑 提取码：<strong id="code"></strong></p>
-  </div>
-
-  <div class="tip">
-    如无法自动识别，请手动输入完整订单号
-  </div>
-
-  <div class="email">
-    问题反馈：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
+  <!-- ✅ 3. 底部操作区 -->
+  <div class="action-area">
+    <div class="price" id="priceText"></div>
+    <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
+    
+    <!-- 解锁区域 -->
+    <div id="unlockBox" style="margin-top:20px;display:none;">
+      <input id="tokenInput" type="text" placeholder="输入订单号解锁" style="padding:8px;width:250px;border:1px solid #ddd;border-radius:4px;margin-right:10px;">
+      <button class="btn" onclick="doUnlock()" style="padding:8px 20px;font-size:14px;">解锁</button>
+      <p style="margin-top:10px;font-size:12px;color:#999;">支付完成后，输入订单号即可查看网盘地址</p>
+    </div>
   </div>
 </div>
 
 <div class="footer-note">
-  本站为个人整理分享，通过
-  <a href="https://afdian.net/@你的ID" target="_blank">爱发电</a>
-  接受赞助支持，非商业售卖。
+  本站为个人整理分享，通过 <a href="https://afdian.net/" target="_blank">爱发电</a> 接受赞助支持，非商业售卖。
 </div>
 
 <script>
@@ -158,60 +236,39 @@ fetch('data.json')
       return;
     }
     
-    // ✅ 渲染预览图（顶部大图，显示最上方）
-    const previewContainer = document.getElementById('previewContainer');
-    if (currentItem.preview_img) {
-      previewContainer.innerHTML = `<img src="${currentItem.preview_img}" alt="${currentItem.title} 预览图">`;
-    } else if (currentItem.images && currentItem.images.length > 0) {
-      // 如果没有preview_img，用第一张图作为预览
-      previewContainer.innerHTML = `<img src="${currentItem.images[0]}" alt="${currentItem.title} 预览图">`;
-    } else {
-      previewContainer.innerHTML = `<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#999;">暂无预览图</div>`;
-    }
+    // ✅ 渲染顶部大图（封面）：强制显示头部
+    const mainImg = document.getElementById('mainImage');
+    // 优先使用 preview_img，如果没有则用第一张详情图
+    mainImg.src = currentItem.preview_img || currentItem.images?.[0] || 'https://via.placeholder.com/800x500?text=No+Image';
     
-    // ✅ 渲染详情页图片（三行两列，全图展示）
-    const imageGrid = document.getElementById('imageGrid');
+    // ✅ 渲染标题和描述
+    document.getElementById('title').textContent = currentItem.title;
+    document.getElementById('desc').innerHTML = currentItem.detail.replace(/\n/g, '<br>');
+    document.getElementById('priceText').textContent = `¥${currentItem.price} 赞助获取`;
+    
+    // ✅ 渲染详情图列表：一行2张，原尺寸展示
+    const imageList = document.getElementById('imageList');
     if (currentItem.images && currentItem.images.length > 0) {
-      // 最多显示6张（三行两列）
-      const imagesToShow = currentItem.images.slice(0, 6);
-      imageGrid.innerHTML = imagesToShow.map(url => 
-        `<img src="${url}" alt="${currentItem.title} 详情图">`
+      imageList.innerHTML = currentItem.images.map(url => 
+        `<div class="image-item">
+          <img src="${url}" alt="详情图">
+        </div>`
       ).join('');
     } else {
-      imageGrid.innerHTML = `<div style="grid-column:span 2;text-align:center;color:#999;padding:20px;">暂无详情图</div>`;
+      imageList.innerHTML = `<div style="text-align:center;color:#999;width:100%;">暂无更多图片</div>`;
     }
-    
-    // ✅ 填充文本信息
-    title.textContent = currentItem.title;
-    desc.innerHTML = currentItem.detail.replace(/\n/g, '<br>');
-    payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
   });
 
-// ✅ 点击赞助（跳对应商品）
-payBtn.onclick = () => {
+// ✅ 点击赞助
+document.getElementById('payBtn').onclick = () => {
   if (!currentItem) return;
-  // 跳转到该资源专属的爱发电商品页
   window.open(currentItem.afdLink, '_blank');
-  refreshTip.style.display = 'block';
-  unlockBox.style.display = 'block';
+  document.getElementById('unlockBox').style.display = 'block';
 };
 
-// ✅ 粘贴按钮
-async function pasteToken() {
-  try {
-    const text = await navigator.clipboard.readText();
-    let clean = text.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (clean.startsWith('AFD')) clean = clean.substring(3);
-    tokenInput.value = clean;
-  } catch (err) {
-    alert('粘贴失败，请手动输入完整订单号');
-    tokenInput.focus();
-  }
-}
-
-// ✅ 主解锁逻辑
+// ✅ 解锁逻辑
 async function doUnlock() {
-  const token = tokenInput.value.trim().toUpperCase();
+  const token = document.getElementById('tokenInput').value.trim().toUpperCase();
   if (!token) {
     alert('请输入订单号');
     return;
@@ -227,40 +284,7 @@ async function doUnlock() {
     const data = await res.json();
     
     if (data.ok) {
-      link.href = data.panUrl;
-      link.textContent = data.panUrl;
-      code.textContent = data.panCode;
-      result.style.display = 'block';
-      unlockBox.style.display = 'none';
-    } else {
-      alert('❌ ' + data.msg);
-      offlineBox.style.display = 'block';
-    }
-  } catch (err) {
-    alert('⚠️ 网络错误，请检查控制台');
-    console.error(err);
-  }
-}
-
-// ✅ 备用解锁
-function doBackupUnlock() {
-  const backupToken = backupInput.value.trim();
-  if (backupToken === BACKUP_CODES[id]) {
-    link.href = currentItem.panUrl;
-    link.textContent = currentItem.panUrl;
-    code.textContent = currentItem.panCode;
-    result.style.display = 'block';
-    unlockBox.style.display = 'none';
-    offlineBox.style.display = 'none';
-  } else {
-    alert('备用码错误，请联系站长');
-  }
-}
-
-// 回车解锁
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && unlockBox.style.display === 'block') doUnlock();
-});
-</script>
-</body>
-</html>
+      // 这里简单用 alert 显示结果，也可以改成页面内的弹窗
+      const msg = `🎉 网盘地址：${data.panUrl}\n🔑 提取码：${data.panCode}`;
+      alert(msg);
+      // 也可以自动复制到剪贴板
