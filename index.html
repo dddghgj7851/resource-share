@@ -1,36 +1,230 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的资源站</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, "Microsoft YaHei", sans-serif; background: #f5f5f5; padding: 20px; }
-  h1 { text-align: center; margin: 30px 0; color: #333; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
-  .card { background: #fff; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform .2s, box-shadow .2s; text-decoration: none; color: inherit; display: block; }
-  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,.12); }
-  .card img { width: 100%; height: 180px; object-fit: cover; display: block; }
-  .card h3 { padding: 14px 16px; font-size: 15px; font-weight: 600; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>资源分享平台</title>
+  <!-- 引入CSS样式文件 -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>📦 资源分享</h1>
-<div class="grid" id="grid"></div>
+<div class="container">
+  <!-- ==================== 主页：资源列表 ==================== -->
+  <div id="homePage">
+    <h1>📦 精品资源分享</h1>
+    
+    <div class="resource-list" id="resourceList">
+      <!-- 资源卡片将由JavaScript动态生成 -->
+    </div>
+  </div>
+
+  <!-- ==================== 详情页：单个资源 ==================== -->
+  <div id="detailPage" style="display:none;">
+    <div class="container">
+      <!-- 资源标题和描述 -->
+      <div class="detail-header">
+        <h2 id="detailTitle"></h2>
+        <p id="detailDesc"></p>
+      </div>
+
+      <!-- ✅ 详情页图片区域：3张图，尺寸缩小 -->
+      <div class="image-gallery" id="detailGallery">
+        <!-- 3张详情图将由JavaScript动态生成 -->
+      </div>
+
+      <!-- 解锁区域 -->
+      <div class="unlock-box">
+        <div class="input-group">
+          <input type="text" id="tokenInput" placeholder="请输入订单号（纯数字）">
+          <button class="btn" onclick="doUnlock()">🔓 解锁网盘地址</button>
+          <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
+        </div>
+        <p style="font-size:14px; color:#999; margin-top:15px;">
+          💡 赞助后请勿刷新页面，直接输入订单号即可解锁
+        </p>
+        
+        <!-- 结果显示区域 -->
+        <div class="result-box" id="resultBox">
+          <strong>🎁 网盘地址：</strong>
+          <a href="#" id="panLink" target="_blank"></a>
+          <strong>🔑 提取码：</strong>
+          <span id="panCode"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-fetch('data.json').then(r=>r.json()).then(list=>{
-  const g = document.getElementById('grid');
-  list.forEach(item=>{
-    g.innerHTML += `
-      <a class="card" href="detail.html?id=${item.id}">
-        <img src="${item.preview_img}" alt="">
-        <h3>${item.title}</h3>
-      </a>`;
+  // ==========================================
+  // ✅ 配置区域
+  // ==========================================
+  const API_URL = "https://res.top147.dpdns.org"; // 你的Worker接口地址
+  
+  // 模拟数据（实际使用时可以从data.json加载）
+  const resources = [
+    {
+      id: "001",
+      title: "001-柳神神威-AI绘画",
+      desc: "极品AI绘画作品，画质精美，细节丰富。",
+      cover: "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg", // ✅ 主页封面：半身图（图2）
+      images: [ // ✅ 详情页3张图（图4）
+        "https://i.ibb.co/99THBy16/VAM-TG-guoman18-1.jpg",
+        "https://i.ibb.co/wF3YGX97/VAM-guoman18-77.jpg",
+        "https://i.ibb.co/xxxxxxx/another-detail.jpg" // 替换为真实第三张图
+      ],
+      panUrl: "https://pan.baidu.com/s/1xxxxx",
+      panCode: "8888"
+    },
+    {
+      id: "002",
+      title: "002-古风美人集",
+      desc: "古风美女AI绘画合集，意境优美。",
+      cover: "https://i.ibb.co/99THBy16/VAM-TG-guoman18-1.jpg", // 半身图
+      images: [
+        "https://i.ibb.co/wF3YGX97/VAM-guoman18-77.jpg",
+        "https://i.ibb.co/xxxxxxx/another-detail.jpg",
+        "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg"
+      ],
+      panUrl: "https://pan.baidu.com/s/2yyyyy",
+      panCode: "9999"
+    }
+  ];
+
+  // ==========================================
+  // ✅ 页面初始化
+  // ==========================================
+  document.addEventListener('DOMContentLoaded', () => {
+    // 检查URL参数，判断是否直接进入详情页
+    const params = new URLSearchParams(window.location.search);
+    const resourceId = params.get('id');
+    
+    if (resourceId) {
+      // 直接进入详情页
+      showDetail(resourceId);
+    } else {
+      // 显示主页列表
+      renderHomePage();
+    }
   });
-});
+
+  // ==========================================
+  // ✅ 主页相关函数
+  // ==========================================
+  function renderHomePage() {
+    const listEl = document.getElementById('resourceList');
+    listEl.innerHTML = '';
+    
+    resources.forEach(resource => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.onclick = () => {
+        // 跳转到详情页，并传递ID参数
+        window.location.href = `index.html?id=${resource.id}`;
+      };
+      
+      card.innerHTML = `
+        <img src="${resource.cover}" alt="${resource.title}">
+        <div class="title">${resource.title}</div>
+      `;
+      
+      listEl.appendChild(card);
+    });
+  }
+
+  // ==========================================
+  // ✅ 详情页相关函数
+  // ==========================================
+  function showDetail(id) {
+    // 切换页面显示
+    document.getElementById('homePage').style.display = 'none';
+    document.getElementById('detailPage').style.display = 'block';
+    
+    // 查找资源
+    const resource = resources.find(r => r.id === id);
+    if (!resource) {
+      alert('资源不存在！');
+      window.location.href = 'index.html';
+      return;
+    }
+    
+    // 设置标题和描述
+    document.getElementById('detailTitle').innerText = resource.title;
+    document.getElementById('detailDesc').innerText = resource.desc;
+    
+    // ✅ 渲染3张详情图（尺寸已缩小）
+    const galleryEl = document.getElementById('detailGallery');
+    galleryEl.innerHTML = '';
+    
+    resource.images.forEach(imgUrl => {
+      const div = document.createElement('div');
+      div.className = 'image-item';
+      div.innerHTML = `<img src="${imgUrl}" alt="详情图" loading="lazy">`;
+      galleryEl.appendChild(div);
+    });
+    
+    // 重置解锁区域
+    document.getElementById('resultBox').style.display = 'none';
+    document.getElementById('tokenInput').value = '';
+  }
+
+  // ==========================================
+  // ✅ 解锁相关函数
+  // ==========================================
+  async function pasteToken() {
+    try {
+      const text = await navigator.clipboard.readText();
+      const clean = text.trim().replace(/[^0-9]/g, '');
+      document.getElementById('tokenInput').value = clean;
+    } catch (err) {
+      alert('无法读取剪贴板，请手动输入订单号');
+      document.getElementById('tokenInput').focus();
+    }
+  }
+
+  async function doUnlock() {
+    const token = document.getElementById('tokenInput').value.trim();
+    if (!token) {
+      alert('请输入订单号！');
+      return;
+    }
+    
+    const btn = event.target;
+    const originalText = btn.innerText;
+    btn.innerText = '查询中...';
+    btn.disabled = true;
+    
+    try {
+      const response = await fetch(`${API_URL}/unlock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+      
+      const result = await response.json();
+      
+      if (result.ok) {
+        // 显示解锁结果
+        document.getElementById('panLink').innerText = result.panUrl;
+        document.getElementById('panLink').href = result.panUrl;
+        document.getElementById('panCode').innerText = result.panCode;
+        document.getElementById('resultBox').style.display = 'block';
+        
+        // 滚动到结果区域
+        document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        alert(`❌ 解锁失败：${result.msg || '订单号无效'}`);
+      }
+    } catch (error) {
+      console.error('解锁请求失败:', error);
+      alert('⚠️ 网络错误，请检查网络连接后重试');
+    } finally {
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }
+  }
 </script>
+
 </body>
 </html>
