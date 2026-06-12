@@ -7,7 +7,7 @@
     "pan_url": "https://pan.baidu.com/s/xxxxxx",
     "pan_code": "abcd",
     "price": 1.0,
-    "afdLink": "https://afdian.com/item/<item_id_1>"
+    "afdLink": "https://afdian.com/item/e64d18d2658811f192f252540025c377"
   },
   {
     "id": "002",
@@ -17,7 +17,7 @@
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
     "pan_code": "efgh",
     "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_2>"
+    "afdLink": "https://afdian.com/item/75687742661e11f1b2c852540025c377"
   },
   {
     "id": "003",
@@ -27,7 +27,7 @@
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
     "pan_code": "efgh",
     "price": 9.9,
-    "afdLink": "https://afdian.com/item/<item_id_3>"
+    "afdLink": "https://afdian.com/item/d5c22548661e11f1ad0d52540025c377"
   },
   {
     "id": "004",
