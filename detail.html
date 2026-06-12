@@ -104,9 +104,13 @@ fetch('data.json')
     payBtn.textContent=`🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
   });
 
-payBtn.onclick=()=>{
-  if(!currentItem)return;
-  window.open(AFD_HOME,'_blank');
+payBtn.onclick = () => {
+  if (!currentItem) return;
+  // 每个资源自己的赞助链接（你在 data.json 里配的）
+  const link = (currentItem.afdLink || AFD_HOME).trim();
+  window.open(link, '_blank');
+  refreshTip.style.display = 'block';
+  unlockBox.style.display = 'block';
 };
 
 /* 标准化：只留数字（把 AFD / 空格 / - 全清掉）*/
