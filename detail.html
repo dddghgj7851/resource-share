@@ -15,15 +15,15 @@
   .back-btn:hover { color: var(--primary); }
   .page-title { font-size: 18px; font-weight: 600; color: #222; }
 
-  /* ✅ 封面图：强制显示头部 */
-  .cover { width: 100%; height: 380px; border-radius: 12px; overflow: hidden; margin-bottom: 25px; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-  .cover img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  /* ✅ 1. 预览图（封面）：使用 preview_img，显示最上方 */
+  .preview { width: 100%; height: 380px; border-radius: 12px; overflow: hidden; margin-bottom: 25px; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+  .preview img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 
   /* 文本 */
   .title { font-size: 24px; font-weight: bold; margin-bottom: 12px; color: #222; }
   .desc { font-size: 15px; color: #555; background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 25px; line-height: 1.8; white-space: pre-wrap; }
 
-  /* ✅ 详情图：3张布局（2+1） */
+  /* ✅ 2. 详情图（images）：3张，2+1布局，全图展示 */
   .gallery { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
   .row { display: flex; gap: 15px; justify-content: center; }
   .item { background: var(--card); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
@@ -60,25 +60,25 @@
   <span class="page-title">资源详情</span>
 </div>
 
-<!-- ✅ 封面图 -->
-<div class="cover">
-  <img id="coverImg" src="" alt="封面">
+<!-- ✅ 1. 预览图（封面）：来自 preview_img -->
+<div class="preview">
+  <img id="previewImg" src="" alt="预览图">
 </div>
 
 <!-- ✅ 标题与描述 -->
 <div class="title" id="title"></div>
 <div class="desc" id="desc"></div>
 
-<!-- ✅ 详情图（3张：2+1布局） -->
-<div class="gallery" id="gallery">
+<!-- ✅ 2. 详情图（images）：3张，2+1布局 -->
+<div class="gallery">
   <!-- 第一行：2张 -->
   <div class="row row-2">
-    <div class="item"><img id="img1" src="" alt=""></div>
-    <div class="item"><img id="img2" src="" alt=""></div>
+    <div class="item"><img id="detailImg1" src="" alt="详情图1"></div>
+    <div class="item"><img id="detailImg2" src="" alt="详情图2"></div>
   </div>
   <!-- 第二行：1张（居中） -->
   <div class="row row-1">
-    <div class="item"><img id="img3" src="" alt=""></div>
+    <div class="item"><img id="detailImg3" src="" alt="详情图3"></div>
   </div>
 </div>
 
@@ -126,11 +126,78 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // 封面图（显示头部）
-      document.getElementById('coverImg').src = currentItem.preview_img || currentItem.images?.[0] || 'https://via.placeholder.com/800x400?text=Cover';
+      // ✅ 1. 预览图：使用 preview_img
+      document.getElementById('previewImg').src = currentItem.preview_img || 'https://via.placeholder.com/800x400?text=Preview';
       
-      // 标题描述
+      // ✅ 2. 标题描述
       document.getElementById('title').textContent = currentItem.title;
       document.getElementById('desc').textContent = currentItem.detail;
       
-      //
+      // ✅ 3. 详情图：使用 images 数组的前3张
+      const imgs = currentItem.images || [];
+      if (imgs[0]) document.getElementById('detailImg1').src = imgs[0];
+      if (imgs[1]) document.getElementById('detailImg2').src = imgs[1];
+      if (imgs[2]) document.getElementById('detailImg3').src = imgs[2];
+    })
+    .catch(err => {
+      console.error("加载失败:", err);
+      document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">数据加载失败</p>';
+    });
+
+  // ✅ 点击赞助
+  document.getElementById('payBtn').onclick = () => {
+    if (!currentItem) return;
+    window.open(currentItem.afdLink, '_blank');
+    document.getElementById('refreshTip').style.display = 'block';
+    document.getElementById('unlockBox').style.display = 'block';
+  };
+
+  // ✅ 粘贴按钮
+  async function pasteToken() {
+    try {
+      const text = await navigator.clipboard.readText();
+      let clean = text.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (clean.startsWith('AFD')) clean = clean.substring(3);
+      document.getElementById('tokenInput').value = clean;
+    } catch (err) {
+      alert('粘贴失败，请手动输入');
+      document.getElementById('tokenInput').focus();
+    }
+  }
+
+  // ✅ 解锁逻辑
+  async function doUnlock() {
+    const token = document.getElementById('tokenInput').value.trim().toUpperCase();
+    if (!token) {
+      alert('请输入订单号');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/unlock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token })
+      });
+
+      const data = await res.json();
+      
+      if (data.ok) {
+        document.getElementById('link').href = data.panUrl;
+        document.getElementById('link').textContent = data.panUrl;
+        document.getElementById('code').textContent = data.panCode;
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('unlockBox').style.display = 'none';
+      } else {
+        alert('❌ ' + data.msg);
+      }
+    } catch (err) {
+      alert('⚠️ 网络错误');
+      console.error(err);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
