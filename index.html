@@ -28,7 +28,7 @@
         <p id="detailDesc"></p>
       </div>
 
-      <!-- ✅ 详情页图片区域：3张图，尺寸缩小 -->
+      <!-- ✅ 详情页图片区域：2行2列，3张图，每张占全屏1/6 -->
       <div class="image-gallery" id="detailGallery">
         <!-- 3张详情图将由JavaScript动态生成 -->
       </div>
@@ -52,6 +52,11 @@
           <span id="panCode"></span>
         </div>
       </div>
+
+      <!-- ✅ Footer Note -->
+      <div class="footer-note">
+        本站为个人整理分享，通过 <a href="https://afdian.net/" target="_blank">爱发电</a> 接受赞助支持，非商业售卖。
+      </div>
     </div>
   </div>
 </div>
@@ -62,36 +67,6 @@
   // ==========================================
   const API_URL = "https://res.top147.dpdns.org"; // 你的Worker接口地址
   
-  // 模拟数据（实际使用时可以从data.json加载）
-  const resources = [
-    {
-      id: "001",
-      title: "001-柳神神威-AI绘画",
-      desc: "极品AI绘画作品，画质精美，细节丰富。",
-      cover: "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg", // ✅ 主页封面：半身图（图2）
-      images: [ // ✅ 详情页3张图（图4）
-        "https://i.ibb.co/99THBy16/VAM-TG-guoman18-1.jpg",
-        "https://i.ibb.co/wF3YGX97/VAM-guoman18-77.jpg",
-        "https://i.ibb.co/xxxxxxx/another-detail.jpg" // 替换为真实第三张图
-      ],
-      panUrl: "https://pan.baidu.com/s/1xxxxx",
-      panCode: "8888"
-    },
-    {
-      id: "002",
-      title: "002-古风美人集",
-      desc: "古风美女AI绘画合集，意境优美。",
-      cover: "https://i.ibb.co/99THBy16/VAM-TG-guoman18-1.jpg", // 半身图
-      images: [
-        "https://i.ibb.co/wF3YGX97/VAM-guoman18-77.jpg",
-        "https://i.ibb.co/xxxxxxx/another-detail.jpg",
-        "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg"
-      ],
-      panUrl: "https://pan.baidu.com/s/2yyyyy",
-      panCode: "9999"
-    }
-  ];
-
   // ==========================================
   // ✅ 页面初始化
   // ==========================================
@@ -112,61 +87,79 @@
   // ==========================================
   // ✅ 主页相关函数
   // ==========================================
-  function renderHomePage() {
-    const listEl = document.getElementById('resourceList');
-    listEl.innerHTML = '';
-    
-    resources.forEach(resource => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.onclick = () => {
-        // 跳转到详情页，并传递ID参数
-        window.location.href = `index.html?id=${resource.id}`;
-      };
+  async function renderHomePage() {
+    try {
+      // 从data.json加载数据
+      const response = await fetch('data.json');
+      const resources = await response.json();
       
-      card.innerHTML = `
-        <img src="${resource.cover}" alt="${resource.title}">
-        <div class="title">${resource.title}</div>
-      `;
+      const listEl = document.getElementById('resourceList');
+      listEl.innerHTML = '';
       
-      listEl.appendChild(card);
-    });
+      resources.forEach(resource => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => {
+          // 跳转到详情页，并传递ID参数
+          window.location.href = `index.html?id=${resource.id}`;
+        };
+        
+        card.innerHTML = `
+          <img src="${resource.preview_img}" alt="${resource.title}">
+          <div class="title">${resource.title}</div>
+        `;
+        
+        listEl.appendChild(card);
+      });
+    } catch (error) {
+      console.error('加载数据失败:', error);
+      document.getElementById('resourceList').innerHTML = '<p style="text-align:center;color:#999;">数据加载失败，请刷新重试</p>';
+    }
   }
 
   // ==========================================
   // ✅ 详情页相关函数
   // ==========================================
-  function showDetail(id) {
-    // 切换页面显示
-    document.getElementById('homePage').style.display = 'none';
-    document.getElementById('detailPage').style.display = 'block';
-    
-    // 查找资源
-    const resource = resources.find(r => r.id === id);
-    if (!resource) {
-      alert('资源不存在！');
-      window.location.href = 'index.html';
-      return;
+  async function showDetail(id) {
+    try {
+      // 切换页面显示
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('detailPage').style.display = 'block';
+      
+      // 从data.json加载数据
+      const response = await fetch('data.json');
+      const resources = await response.json();
+      
+      // 查找资源
+      const resource = resources.find(r => r.id === id);
+      if (!resource) {
+        alert('资源不存在！');
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // 设置标题和描述
+      document.getElementById('detailTitle').innerText = resource.title;
+      document.getElementById('detailDesc').innerText = resource.detail;
+      
+      // ✅ 渲染3张详情图（2行2列，每张占全屏1/6）
+      const galleryEl = document.getElementById('detailGallery');
+      galleryEl.innerHTML = '';
+      
+      resource.images.forEach(imgUrl => {
+        const div = document.createElement('div');
+        div.className = 'image-item';
+        div.innerHTML = `<img src="${imgUrl}" alt="详情图" loading="lazy">`;
+        galleryEl.appendChild(div);
+      });
+      
+      // 重置解锁区域
+      document.getElementById('resultBox').style.display = 'none';
+      document.getElementById('tokenInput').value = '';
+    } catch (error) {
+      console.error('加载详情失败:', error);
+      alert('加载详情失败，请返回重试');
     }
-    
-    // 设置标题和描述
-    document.getElementById('detailTitle').innerText = resource.title;
-    document.getElementById('detailDesc').innerText = resource.desc;
-    
-    // ✅ 渲染3张详情图（尺寸已缩小）
-    const galleryEl = document.getElementById('detailGallery');
-    galleryEl.innerHTML = '';
-    
-    resource.images.forEach(imgUrl => {
-      const div = document.createElement('div');
-      div.className = 'image-item';
-      div.innerHTML = `<img src="${imgUrl}" alt="详情图" loading="lazy">`;
-      galleryEl.appendChild(div);
-    });
-    
-    // 重置解锁区域
-    document.getElementById('resultBox').style.display = 'none';
-    document.getElementById('tokenInput').value = '';
   }
 
   // ==========================================
