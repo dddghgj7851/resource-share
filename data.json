@@ -2,7 +2,12 @@
   {
     "id": "001",
     "title": "001-柳神神威-AI绘画",
-    "preview_img": "https://picsum.photos/400/250?random=1",
+    "preview_img": "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg",
+    "images": [
+      "https://i.ibb.co/hxkPC9Rs/VAM-guoman18-58.jpg",
+      "https://i.ibb.co/99THBy16/VAM-TG-guoman18-1.jpg",
+      "https://i.ibb.co/wF3YGX97/VAM-guoman18-77.jpg"
+    ],
     "detail": "这里写资源的详细介绍，比如包含什么内容、使用方法等。",
     "pan_url": "https://pan.baidu.com/s/xxxxxx",
     "pan_code": "abcd",
@@ -12,7 +17,12 @@
   {
     "id": "002",
     "title": "002-紫灵天南篇-AI绘画",
-    "preview_img": "https://picsum.photos/400/250?random=2",
+    "preview_img": "https://i.ibb.co/sdyF0K1s/VAM-TG-guoman18-9.jpg",
+    "images": [
+      "https://i.ibb.co/2372hyk9/VAM-TG-guoman18-27.jpg",
+      "https://i.ibb.co/zV0gY7cx/VAM-guoman18-157.jpg",
+      "https://i.ibb.co/jZkL2VpX/VAM-guoman18-47.jpg"
+    ],
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
     "pan_code": "efgh",
@@ -22,7 +32,12 @@
   {
     "id": "003",
     "title": "003-陆嫁嫁情意深深-AI",
-    "preview_img": "https://picsum.photos/400/250?random=3",
+    "preview_img": "https://i.ibb.co/dwLyyrB8/VAM-guoman18-46.jpg",
+    "images": [
+      "https://i.ibb.co/d0Pq79mY/VAM-guoman18-18.jpg",
+      "https://i.ibb.co/3YQDK1XZ/VAM-guoman18-4.jpg",
+      "https://i.ibb.co/0jdLfNDh/VAM-guoman18-1.jpg"
+    ],
     "detail": "30组电影级LUT预设，支持PR/AE/达芬奇。",
     "pan_url": "https://pan.baidu.com/s/yyyyyy",
     "pan_code": "efgh",
