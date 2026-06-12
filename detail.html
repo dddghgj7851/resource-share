@@ -1,72 +1,223 @@
-export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>资源详情</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; padding: 20px; }
+  .box { max-width: 720px; margin: 40px auto; background: #fff; border-radius: 14px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,.05); }
+  .back { color: #888; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 18px; }
+  .back:hover { color: #333; }
+  .hero { width: 100%; height: 260px; object-fit: cover; border-radius: 10px; background: #eee; }
+  h1 { margin: 20px 0 14px; color: #222; font-size: 24px; }
+  .desc { color: #555; line-height: 1.8; margin-bottom: 28px; font-size: 15px; }
+  .btn { display: inline-block; background: linear-gradient(135deg,#ff6b35,#ff8a5c); color: #fff; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,.3); }
+  .btn-secondary { background: #6c757d; }
+  .btn-secondary:hover { background: #5a6268; }
+  .result { margin-top: 24px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 20px; border-radius: 10px; display: none; }
+  .result a { color: #2e7d32; font-weight: 600; word-break: break-all; }
+  .tip { margin-top: 20px; font-size: 13px; color: #888; text-align: center; }
+  .email { margin-top: 30px; font-size: 13px; color: #666; text-align: center; }
+  .email a { color: #ff6b35; text-decoration: none; }
+  #unlockBox { margin-top: 20px; display: none; }
+  #unlockBox p { font-size: 14px; color: #666; margin-bottom: 10px; }
+  #tokenInput { width: 200px; padding: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 2px; }
+  #refreshTip { margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; }
+  #offlineBox { margin-top: 20px; padding: 15px; background: #f8d7da; color: #721c24; border-radius: 8px; display: none; }
+  #debugInfo { margin-top: 10px; padding: 10px; background: #e9ecef; color: #495057; border-radius: 6px; display: none; font-family: monospace; font-size: 12px; }
+  /* ✅ 恢复你提到的备案说明样式 */
+  .footer-note { margin-top:40px;font-size:13px;color:#aaa;text-align:center; }
+  .footer-note a { color:#ff6b35; text-decoration: none; }
+</style>
+</head>
+<body>
 
-    // 1. 爱发电 Webhook 接收端
-    if (url.pathname === "/afdian-webhook") {
-      
-      // ★★★ 关键调试：强制打印所有收到的请求头 ★★★
-      console.log("=== Incoming Request Headers ===");
-      for (const [key, value] of request.headers.entries()) {
-        console.log(`${key}: ${value}`);
-      }
+<div class="box">
+  <a class="back" href="index.html">← 返回首页</a>
+  <img class="hero" id="hero" src="" alt="">
+  <h1 id="title"></h1>
+  <div class="desc" id="desc"></div>
 
-      // 如果是 GET 请求（爱发电用来探活），直接返回 ok
-      if (request.method === "GET") {
-        return new Response("ok", { status: 200 });
-      }
+  <!-- 赞助按钮 -->
+  <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
 
-      // 必须是 POST 请求
-      if (request.method !== "POST") {
-        return new Response(JSON.stringify({ ec: 405, em: "Method Not Allowed" }), {
-          status: 405,
-          headers: { "Content-Type": "application/json" }
-        });
-      }
+  <!-- 刷新提示 -->
+  <div id="refreshTip">
+    ✅ 支付完成后，请 <strong>刷新本页面</strong>，然后粘贴订单号后8位解锁。
+  </div>
 
-      try {
-        // 读取 Body
-        const bodyText = await request.text();
-        console.log("=== Request Body ===");
-        console.log(bodyText); // 打印原始 JSON 字符串
+  <!-- 解锁区域 -->
+  <div id="unlockBox">
+    <p>支付成功后，请粘贴 <strong>订单号后8位</strong>：</p>
+    <input id="tokenInput" type="text" placeholder="例如：A1B2C3D4" maxlength="8">
+    <button class="btn" onclick="doUnlock()">解锁</button>
+    <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
+    <div id="debugInfo"></div>
+  </div>
 
-        // 尝试解析 JSON
-        const data = JSON.parse(bodyText);
-        
-        // ★★★ 关键逻辑：不管签名对不对，先强制写入 KV 看看能不能解开锁 ★★★
-        // 提取订单号 (尝试常见字段)
-        const order_id = data.data?.order?.order_id || data.order_id || "UNKNOWN_ID";
-        
-        // 提取资源 ID (尝试从商品备注中找)
-        let resId = "default";
-        try {
-            const remark = data.data?.order?.remark || "";
-            const match = remark.match(/ID:\s*(\w+)/i);
-            if (match && match[1]) {
-                resId = match[1];
-            }
-        } catch(e) {}
+  <!-- 离线备用通道 -->
+  <div id="offlineBox">
+    <p><strong>⚠️ 在线解锁失败</strong></p>
+    <p>请使用备用解锁码，或联系站长。</p>
+    <input id="backupInput" type="text" placeholder="备用解锁码" style="width:200px;padding:8px;margin-right:8px;">
+    <button class="btn" onclick="doBackupUnlock()">备用解锁</button>
+  </div>
 
-        // 生成 Token (取订单号后8位)
-        const token = order_id.slice(-8).toUpperCase();
+  <!-- 结果 -->
+  <div class="result" id="result">
+    <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
+    <p>🔑 提取码：<strong id="code"></strong></p>
+  </div>
 
-        // 强制写入 KV
-        await env.RESOURCE_KV.put(`token:${token}`, resId);
-        console.log(`[SUCCESS] KV Written: token:${token} -> ${resId}`);
+  <div class="tip">
+    如无法自动识别，请手动输入订单号后8位
+  </div>
 
-        // 返回成功给爱发电
-        return new Response(JSON.stringify({ ec: 200, em: "Success" }), {
-          headers: { "Content-Type": "application/json" }
-        });
+  <div class="email">
+    问题反馈：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a>
+  </div>
+</div>
 
-      } catch (e) {
-        console.error("!!! PROCESSING ERROR !!!", e);
-        return new Response(JSON.stringify({ ec: 500, em: e.message }), {
-          status: 500
-        });
-      }
+<!-- ✅ 恢复你提到的备案说明段落 -->
+<div class="footer-note">
+  本站为个人整理分享，通过
+  <a href="https://afdian.net/@你的ID" target="_blank">爱发电</a>
+  接受赞助支持，非商业售卖。
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+
+// ✅ 配置区（请替换为你的真实信息）
+const API = "https://resource-api.plmplm999.workers.dev";
+const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377"; // 若无法访问，改为 https://afdian.net/@你的ID
+const BACKUP_CODES = { "001": "BACKUP001" }; // 备用解锁码（可自定义）
+
+let currentItem = null;
+
+// 加载资源
+fetch('data.json')
+  .then(r => r.json())
+  .then(list => {
+    currentItem = list.find(x => x.id === id);
+    if (!currentItem) {
+      document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">未找到该资源</p>';
+      return;
     }
+    hero.src = currentItem.preview_img;
+    title.textContent = currentItem.title;
+    desc.innerHTML = currentItem.detail.replace(/\n/g, '<br>');
+    payBtn.textContent = `🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
+  });
 
-    return new Response("Not Found", { status: 404 });
-  }
+// 点击赞助
+payBtn.onclick = () => {
+  if (!currentItem) return;
+  window.open(AFD_HOME, '_blank');
+  refreshTip.style.display = 'block';
+  unlockBox.style.display = 'block';
 };
+
+// ✅ 粘贴按钮功能：直接提取订单号后8位
+async function pasteToken() {
+  try {
+    const text = await navigator.clipboard.readText();
+    // 直接提取后8位
+    let clean = text.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (clean.startsWith('AFD')) clean = clean.substring(3);
+    if (clean.length > 8) clean = clean.slice(-8);
+    
+    tokenInput.value = clean;
+    showDebug('已从剪贴板提取后8位：' + clean);
+  } catch (err) {
+    alert('粘贴失败，请手动输入订单号后8位');
+    tokenInput.focus();
+  }
+}
+
+// ✅ 主解锁逻辑（含KV冲突提示）
+async function doUnlock() {
+  const token = tokenInput.value.trim();
+  if (!token) {
+    alert('请输入订单号后8位');
+    return;
+  }
+
+  if (token.length !== 8) {
+    alert('订单号后8位必须是8位字符');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/unlock`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resId: id, token })
+    });
+
+    const data = await res.json();
+    showDebug('API 响应：' + JSON.stringify(data));
+
+    if (data.ok) {
+      showResult(data);
+    } else {
+      // ✅ 关键提示：KV手动设置token可能导致冲突
+      const kvConflictHint = `
+        ⚠️ 解锁失败：${data.msg}
+        \n\n可能原因：
+        1. 订单号错误（请核对支付成功页的订单号后8位）
+        2. CF KV中手动设置过token（请删除手动添加的token，让Worker自动生成）
+        3. 资源ID不匹配（当前资源ID：${id}）
+      `;
+      showDebug(kvConflictHint);
+      alert(kvConflictHint);
+      offlineBox.style.display = 'block';
+    }
+  } catch (err) {
+    showDebug('❌ 网络错误：' + err.message);
+    alert('⚠️ 网络连接失败，请稍后再试');
+    offlineBox.style.display = 'block';
+  }
+}
+
+// ✅ 备用解锁
+function doBackupUnlock() {
+  const backupToken = backupInput.value.trim();
+  if (backupToken === BACKUP_CODES[id]) {
+    showResult({
+      panUrl: currentItem.panUrl,
+      panCode: currentItem.panCode
+    });
+  } else {
+    alert('备用码错误，请联系站长');
+  }
+}
+
+// 显示调试信息
+function showDebug(msg) {
+  debugInfo.style.display = 'block';
+  debugInfo.innerHTML += msg + '<br>';
+}
+
+// 显示结果
+function showResult(data) {
+  link.href = data.panUrl;
+  link.textContent = data.panUrl;
+  code.textContent = data.panCode;
+  result.style.display = 'block';
+  unlockBox.style.display = 'none';
+  offlineBox.style.display = 'none';
+  debugInfo.style.display = 'none';
+}
+
+// 回车解锁
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && unlockBox.style.display === 'block') doUnlock();
+});
+</script>
+</body>
+</html>
