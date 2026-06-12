@@ -5,210 +5,132 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>资源详情</title>
 <style>
-:root { --primary: #ff6b35; --bg: #fafafa; --card-bg: #fff; --text: #333; --border: #eee; }
-{ box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; max-width: 1200px; margin: 0 auto; }
-/* 头部导航 */
-.header { display: flex; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
-.back-btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #666; font-size: 15px; margin-right: 20px; }
-.back-btn:hover { color: var(--primary); }
-.page-title { font-size: 24px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 10px; }
-.page-title::before { content: "📦"; font-size: 26px; }
-/* 封面图区域：强制显示顶部 */
-.cover-wrapper { width: 100%; margin-bottom: 30px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); background: #000; }
-.cover-img { width: 100%; height: auto; max-height: 500px; object-fit: cover; object-position: top center; display: block; transition: transform 0.3s; }
-.cover-img:hover { transform: scale(1.02); }
-/* 文本信息 */
-.info-section { margin-bottom: 30px; }
-.resource-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; color: #222; }
-.resource-desc { font-size: 16px; color: #555; white-space: pre-wrap; background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border); line-height: 1.8; }
-/* 操作按钮 */
-.action-area { margin-bottom: 30px; }
-.btn { display: inline-block; background: linear-gradient(135deg, var(--primary), #ff8a5c); color: #fff; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; box-shadow: 0 4px 10px rgba(255,107,53,0.3); }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,0.4); }
-.btn-secondary { background: #6c757d; box-shadow: 0 4px 10px rgba(108,117,125,0.3); }
-.btn-secondary:hover { background: #5a6268; box-shadow: 0 6px 20px rgba(90,98,104,0.4); }
-/* 解锁表单 */
-unlockBox { margin-top: 20px; background: #fff; padding: 25px; border-radius: 10px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none; }
-unlockBox p { margin-bottom: 15px; font-size: 15px; color: #555; }
-tokenInput { width: 300px; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; margin-right: 10px; }
-refreshTip { margin-top: 15px; padding: 12px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; font-size: 14px; }
-/* ✅ 详情图网格：铺满原图，一行2张 */
-.gallery-grid {
-display: grid;
-grid-template-columns: repeat(2, 1fr); /* 一行2列 */
-gap: 20px; /* 图片间距 */
-margin-bottom: 30px;
-}
-.gallery-item {
-background: #fff;
-border-radius: 10px;
-overflow: hidden;
-box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-border: 1px solid #eee;
-aspect-ratio: 1 / 1; /* 保持正方形容器 */
-display: flex;
-align-items: center;
-justify-content: center;
-}
-.gallery-item img {
-width: 100%;
-height: 100%;
-object-fit: contain; /* ✅ 核心：完整显示原图，不裁剪，不黑屏 */
-cursor: zoom-in;
-transition: opacity 0.3s;
-}
-.gallery-item img:hover { opacity: 0.9; }
-/* 结果区域 */
-.result { margin-top: 24px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 20px; border-radius: 10px; display: none; font-size: 15px; }
-.result p { margin-bottom: 10px; }
-.result a { color: #2e7d32; font-weight: 600; word-break: break-all; text-decoration: none; }
-.result a:hover { text-decoration: underline; }
-.tip { margin-top: 20px; font-size: 13px; color: #888; text-align: center; }
-.footer-note { margin-top:40px;font-size:13px;color:#aaa;text-align:center; }
-.footer-note a { color:var(--primary); text-decoration: none; }
+  :root { --primary: #ff6b35; --bg: #f5f5f5; --card: #fff; --text: #333; --border: #eee; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; max-width: 900px; margin: 0 auto; }
+  
+  /* 头部 */
+  .header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+  .back-btn { color: #666; text-decoration: none; margin-right: 15px; font-size: 14px; }
+  .back-btn:hover { color: var(--primary); }
+  .page-title { font-size: 18px; font-weight: 600; color: #222; }
+
+  /* ✅ 封面图：强制显示头部 */
+  .cover { width: 100%; height: 380px; border-radius: 12px; overflow: hidden; margin-bottom: 25px; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+  .cover img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+
+  /* 文本 */
+  .title { font-size: 24px; font-weight: bold; margin-bottom: 12px; color: #222; }
+  .desc { font-size: 15px; color: #555; background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 25px; line-height: 1.8; white-space: pre-wrap; }
+
+  /* ✅ 详情图：3张布局（2+1） */
+  .gallery { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+  .row { display: flex; gap: 15px; justify-content: center; }
+  .item { background: var(--card); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+  /* 第一行2张 */
+  .row-2 .item { flex: 1; max-width: calc(50% - 7.5px); aspect-ratio: 4/3; }
+  /* 第二行1张 */
+  .row-1 .item { width: 100%; max-width: 450px; aspect-ratio: 16/9; }
+  .item img { width: 100%; height: 100%; object-fit: contain; background: #f8f8f8; }
+
+  /* 按钮 */
+  .btn { display: inline-block; background: linear-gradient(135deg, var(--primary), #ff8a5c); color: #fff; padding: 12px 35px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,0.3); }
+  .btn-secondary { background: #6c757d; }
+  .btn-secondary:hover { background: #5a6268; }
+
+  /* 解锁区 */
+  #unlockBox { margin-top: 20px; background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #ddd; display: none; }
+  #unlockBox input { width: 280px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-right: 10px; }
+  #refreshTip { margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; display: none; font-size: 13px; }
+
+  /* 结果 */
+  .result { margin-top: 20px; background: #f0f9f0; border: 1px solid #c8e6c8; padding: 15px; border-radius: 8px; display: none; font-size: 14px; }
+  .result a { color: #2e7d32; font-weight: 600; word-break: break-all; }
+
+  .tip { margin-top: 20px; font-size: 13px; color: #888; text-align: center; }
+  .footer-note { margin-top: 40px; font-size: 13px; color: #aaa; text-align: center; }
+  .footer-note a { color: var(--primary); text-decoration: none; }
 </style>
 </head>
 <body>
+
 <div class="header">
-<a class="back-btn" href="index.html">← 返回首页</a>
-资源分享
+  <a class="back-btn" href="index.html">← 返回</a>
+  <span class="page-title">资源详情</span>
 </div>
-<div class="cover-wrapper">
-<img id="mainImage" class="cover-img" src="" alt="封面图">
+
+<!-- ✅ 封面图 -->
+<div class="cover">
+  <img id="coverImg" src="" alt="封面">
 </div>
-<div class="info-section">
-<div id="resourceDesc" class="resource-desc"></div>
+
+<!-- ✅ 标题与描述 -->
+<div class="title" id="title"></div>
+<div class="desc" id="desc"></div>
+
+<!-- ✅ 详情图（3张：2+1布局） -->
+<div class="gallery" id="gallery">
+  <!-- 第一行：2张 -->
+  <div class="row row-2">
+    <div class="item"><img id="img1" src="" alt=""></div>
+    <div class="item"><img id="img2" src="" alt=""></div>
+  </div>
+  <!-- 第二行：1张（居中） -->
+  <div class="row row-1">
+    <div class="item"><img id="img3" src="" alt=""></div>
+  </div>
 </div>
-<div id="imageList" class="gallery-grid">
+
+<!-- ✅ 赞助按钮 -->
+<div style="text-align:center; margin-bottom:30px;">
+  <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
 </div>
-<div class="action-area">
-<button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
-</div>
+
+<!-- 提示 -->
 <div id="refreshTip">
-✅ 支付完成后，请 返回本页面，禁止刷新页面，然后输入完整订单号解锁。
+  ✅ 支付后请勿刷新，直接在本页输入订单号解锁
 </div>
+
+<!-- ✅ 解锁区 -->
 <div id="unlockBox">
-支付成功后，请输入 完整订单号：
-<input id="tokenInput" type="text" placeholder="例如：202508171646131345676464102">
-<button class="btn" onclick="doUnlock()">解锁</button>
-<button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
+  输入订单号：
+  <input id="tokenInput" type="text" placeholder="纯数字订单号">
+  <button class="btn" onclick="doUnlock()">解锁</button>
+  <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
 </div>
+
+<!-- 结果 -->
 <div class="result" id="result">
-🎉 网盘地址：<a href="#" id="link" target="_blank"></a>
-🔑 提取码：
+  🎉 网盘地址：<a href="#" id="link" target="_blank"></a>
+  🔑 提取码：<strong id="code"></strong>
 </div>
-<div class="tip">
-如无法自动识别，请手动输入完整订单号
-</div>
-<div class="footer-note">
-本站为个人整理分享，通过 <a href="https://afdian.net/@你的ID" target="_blank">爱发电</a> 接受赞助支持，非商业售卖。
-</div>
+
+<div class="tip">如无法识别，请手动输入订单号</div>
+<div class="footer-note">本站通过 <a href="https://afdian.net" target="_blank">爱发电</a> 接受赞助</div>
+
 <script>
-// ✅ 核心修复：等待 DOM 完全加载后再执行逻辑
 document.addEventListener('DOMContentLoaded', () => {
-const params = new URLSearchParams(location.search);
-const id = params.get('id');
-// ✅ 配置区
-const API = "https://res.top147.dpdns.org"; // Worker 地址
-const BACKUP_CODES = { "001": "BACKUP001", "002": "BACKUP002" }; // 备用码
-let currentItem = null;
-// 加载资源
-fetch('data.json')
-.then(r => r.json())
-.then(list => {
-currentItem = list.find(x => x.id === id);
-if (!currentItem) {
-document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">未找到该资源';
-return;
-}
-// ✅ 1. 渲染顶部大图（强制显示头部）
-const mainImg = document.getElementById('mainImage');
-mainImg.src = currentItem.preview_img || currentItem.images?.[0] || 'https://via.placeholder.com/800x500?text=No+Image';
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const API = "https://res.top147.dpdns.org"; // 你的 Worker 地址
+  let currentItem = null;
 
-// ✅ 2. 渲染标题和描述
-document.getElementById('resourceTitle').textContent = currentItem.title;
-document.getElementById('resourceDesc').textContent = currentItem.detail; // 如果是富文本可改用 innerHTML
+  // 加载数据
+  fetch('data.json')
+    .then(r => r.json())
+    .then(list => {
+      currentItem = list.find(x => x.id === id);
+      if (!currentItem) {
+        document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">资源不存在</p>';
+        return;
+      }
 
-// ✅ 3. 渲染详情图网格（一行2张，原图完整显示）
-const imageList = document.getElementById('imageList');
-if (currentItem.images && currentItem.images.length > 0) {
-  imageList.innerHTML = currentItem.images.map(url => 
-    `<div class="gallery-item">
-      <img src="${url}" alt="详情图" loading="lazy">
-    </div>`
-  ).join('');
-} else {
-  imageList.innerHTML = `<div style="text-align:center;color:#999;width:100%;padding:40px;">暂无更多图片</div>`;
-}
-})
-.catch(err => {
-console.error("加载 data.json 失败:", err);
-document.body.innerHTML = '<p style="padding:60px;text-align:center;color:#999">数据加载失败，请刷新重试';
-});
-// ✅ 点击赞助
-document.getElementById('payBtn').onclick = () => {
-if (!currentItem) return;
-window.open(currentItem.afdLink, '_blank');
-document.getElementById('refreshTip').style.display = 'block';
-document.getElementById('unlockBox').style.display = 'block';
-};
-// ✅ 粘贴按钮
-async function pasteToken() {
-try {
-const text = await navigator.clipboard.readText();
-let clean = text.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
-if (clean.startsWith('AFD')) clean = clean.substring(3);
-document.getElementById('tokenInput').value = clean;
-} catch (err) {
-alert('粘贴失败，请手动输入完整订单号');
-document.getElementById('tokenInput').focus();
-}
-}
-// ✅ 主解锁逻辑
-async function doUnlock() {
-const token = document.getElementById('tokenInput').value.trim().toUpperCase();
-if (!token) {
-alert('请输入订单号');
-return;
-}
-try {
-  const res = await fetch(`${API}/unlock`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token })
-  });
-
-  const data = await res.json();
-  
-  if (data.ok) {
-    document.getElementById('link').href = data.panUrl;
-    document.getElementById('link').textContent = data.panUrl;
-    document.getElementById('code').textContent = data.panCode;
-    document.getElementById('result').style.display = 'block';
-    document.getElementById('unlockBox').style.display = 'none';
-  } else {
-    alert('❌ ' + data.msg);
-  }
-} catch (err) {
-  alert('⚠️ 网络错误，请检查控制台');
-  console.error(err);
-}
-}
-// ✅ 备用解锁
-function doBackupUnlock() {
-const backupToken = document.getElementById('backupInput').value.trim();
-if (backupToken === BACKUP_CODES[id]) {
-document.getElementById('link').href = currentItem.panUrl;
-document.getElementById('link').textContent = currentItem.panUrl;
-document.getElementById('code').textContent = currentItem.panCode;
-document.getElementById('result').style.display = 'block';
-document.getElementById('unlockBox').style.display = 'none';
-} else {
-alert('备用码错误，请联系站长');
-}
-}
-});
-</script>
-</body>
-</html>
+      // 封面图（显示头部）
+      document.getElementById('coverImg').src = currentItem.preview_img || currentItem.images?.[0] || 'https://via.placeholder.com/800x400?text=Cover';
+      
+      // 标题描述
+      document.getElementById('title').textContent = currentItem.title;
+      document.getElementById('desc').textContent = currentItem.detail;
+      
+      //
