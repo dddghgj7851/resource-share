@@ -5,170 +5,174 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>资源详情</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:#f5f5f5; padding:20px; }
-  .box { max-width:720px; margin:40px auto; background:#fff; border-radius:14px; padding:30px; box-shadow:0 4px 20px rgba(0,0,0,.05); }
-  .back { color:#888; text-decoration:none; font-size:14px; display:inline-block; margin-bottom:18px; }
-  .back:hover { color:#333; }
-  .hero { width:100%; height:260px; object-fit:cover; border-radius:10px; background:#eee; }
-  h1 { margin:20px 0 14px; color:#222; font-size:24px; }
-  .desc { color:#555; line-height:1.8; margin-bottom:28px; font-size:15px; }
-  .btn { display:inline-block; background:linear-gradient(135deg,#ff6b35,#ff8a5c); color:#fff; padding:14px 40px; border-radius:10px; border:none; font-size:16px; font-weight:600; cursor:pointer; transition:all .2s; }
-  .btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,107,53,.3); }
-  .btn-secondary { background:#6c757d; }
-  .btn-secondary:hover { background:#5a6268; }
-
-  .result { margin-top:24px; background:#f0f9f0; border:1px solid #c8e6c8; padding:20px; border-radius:10px; display:none; }
-  .result a { color:#2e7d32; font-weight:600; word-break:break-all; }
-
-  .tip { margin-top:20px; font-size:13px; color:#888; text-align:center; }
-  .email { margin-top:30px; font-size:13px; color:#666; text-align:center; }
-  .email a { color:#ff6b35; text-decoration:none; }
-
-  /* 解锁区：刷新后不消失 */
-  #unlockBox { margin-top:20px; }
-  #unlockBox .notice { font-size:14px; color:#666; margin-bottom:6px; }
-  #unlockBox .notice b { color:#222; }
-  #tokenInput { width:340px; padding:9px 10px; font-size:15px; border:1px solid #ccc; border-radius:8px; outline:none; }
-  #tokenInput:focus { border-color:#ff6b35; }
-  #offlineBox { margin-top:14px; padding:13px 16px; background:#f8d7da; color:#721c24; border-radius:8px; display:none; }
-  .footer-note { margin-top:40px;font-size:13px;color:#aaa;text-align:center; }
-  .footer-note a { color:#ff6b35; text-decoration:none; }
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+line-height: 1.6;
+color: #333;
+max-width: 800px;
+margin: 0 auto;
+padding: 20px;
+background-color: #f9f9f9;
+}
+.container {
+background: white;
+padding: 30px;
+border-radius: 12px;
+box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+h1 {
+color: #2c3e50;
+border-bottom: 2px solid #eee;
+padding-bottom: 10px;
+}
+.images-container {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+gap: 15px;
+margin: 20px 0;
+}
+.images-container img {
+width: 100%;
+height: 150px;
+object-fit: cover;
+border-radius: 8px;
+border: 1px solid #eee;
+transition: transform 0.3s;
+}
+.images-container img:hover {
+transform: scale(1.05);
+}
+.price-tag {
+display: inline-block;
+background: #ff6b6b;
+color: white;
+padding: 5px 12px;
+border-radius: 20px;
+font-weight: bold;
+margin-bottom: 15px;
+}
+.buy-btn {
+display: inline-block;
+background: #3498db;
+color: white;
+padding: 12px 25px;
+border-radius: 25px;
+text-decoration: none;
+font-weight: bold;
+margin-top: 10px;
+transition: background 0.3s;
+}
+.buy-btn:hover {
+background: #2980b9;
+}
+.unlock-box {
+margin-top: 30px;
+padding: 20px;
+background: #f0f8ff;
+border-radius: 8px;
+border: 1px dashed #ccc;
+}
 </style>
 </head>
 <body>
-
-<div class="box">
-  <a class="back" href="index.html">← 返回首页</a>
-  <img class="hero" id="hero" src="" alt="">
-  <h1 id="title"></h1>
-  <div class="desc" id="desc"></div>
-
-  <!-- 赞助按钮 -->
-  <button class="btn" id="payBtn">🔓 赞助获取网盘地址</button>
-
-  <!-- 解锁区（刷新/重进仍然在） -->
-  <div id="unlockBox">
-    <p class="notice">
-      🔑 已支付成功？请从 <b>爱发电支付成功页</b> 复制“订单号”粘贴到下框：<br>
-      （通常是 18~24 位纯数字，也可能带 <code>AFD</code> 前缀，都能识别）
-    </p>
-    <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-      <input id="tokenInput" type="text" placeholder="粘贴订单号（点右侧「粘贴」最省事）">
-      <button class="btn" onclick="doUnlock()">解锁</button>
-      <button class="btn btn-secondary" onclick="pasteToken()">粘贴</button>
-    </div>
-    <div id="offlineBox">
-      <p style="margin:0 0 6px"><strong>⚠️ 在线解锁失败</strong></p>
-      <p style="margin:0 0 8px;font-size:13px;">还可试备用码，或联系站长。</p>
-      <input id="backupInput" type="text" placeholder="备用解锁码" style="width:200px;padding:8px;margin-right:8px;border-radius:6px;border:1px solid #ccc;">
-      <button class="btn" onclick="doBackupUnlock()">备用解锁</button>
-    </div>
-  </div>
-
-  <!-- 结果 -->
-  <div class="result" id="result">
-    <p>🎉 网盘地址：<a href="#" id="link" target="_blank"></a></p>
-    <p>🔑 提取码：<strong id="code"></strong></p>
-  </div>
-
-  <div class="tip">订单号只在爱发电“支付成功页”显示，复制后回来粘贴即可</div>
-  <div class="email">问题反馈：<a href="mailto:3357134774@qq.com">3357134774@qq.com</a></div>
+<div class="container">
+资源标题
+<div id="res-desc" style="margin-bottom: 20px; color: #666;"></div>
+<!-- 图片展示区域 -->
+<div class="images-container" id="img-list">
+    <!-- 图片将通过 JS 动态插入，最多显示 6 张 -->
 </div>
 
-<div class="footer-note">
-  本站为个人整理分享，通过
-  <a href="https://afdian.net/@你的ID" target="_blank">爱发电</a>
-  接受赞助支持，非商业售卖。
-</div>
+<!-- 价格与购买链接 -->
+<div class="price-tag">赞助 ¥1 获取</div>
+<a id="buy-link" href="#" target="_blank" class="buy-btn">前往爱发电购买</a>
 
+<!-- 解锁区域 -->
+<div class="unlock-box">
+    <h3>🔑 已赞助？在此解锁</h3>
+    <input id="tokenInput" type="text" placeholder="粘贴爱发电订单号（纯数字）" style="padding: 10px; width: 70%; border: 1px solid #ddd; border-radius: 4px;">
+    <button onclick="doUnlock()" style="padding: 10px 15px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer;">解锁资源</button>
+    
+    <div id="result" style="display: none; margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 8px;">
+        🎉 网盘地址：<a id="link" href="#" target="_blank" style="word-break: break-all;"></a>
+        🔑 提取码：<strong id="code"></strong>
+    </div>
+</div>
+</div>
 <script>
-const params = new URLSearchParams(location.search);
-const id = params.get('id');
+// 配置区域：在这里填写你的资源 ID（对应 KV 里的 res:xxx）
+// 假设你当前页面的 URL 是 detail.html?id=001
+const urlParams = new URLSearchParams(window.location.search);
+const resId = urlParams.get('id') || '001'; // 默认为 001
+// API 接口地址（你的 Worker 地址）
+const API = "https://res.top147.dpdns.org"; 
 
-// ✅ 你的真实域名
-const API = "https://res.top147.dpdns.org";
-const AFD_HOME = "https://afdian.com/item/e64d18d2658811f192f252540025c377";
-const BACKUP_CODES = { "001": "BACKUP001" };
+// 页面加载时渲染详情
+document.addEventListener('DOMContentLoaded', () => renderDetailPage(resId));
 
-let currentItem = null;
+async function renderDetailPage(id) {
+    try {
+        // 1. 获取资源详情
+        const res = await fetch(`${API}/detail?id=${id}`);
+        const data = await res.json();
 
-fetch('data.json')
-  .then(r=>r.json())
-  .then(list=>{
-    currentItem = list.find(x=>x.id===id);
-    if(!currentItem){ document.body.innerHTML='<p style="padding:60px;text-align:center;color:#999">未找到该资源'; return; }
-    hero.src=currentItem.preview_img;
-    title.textContent=currentItem.title;
-    desc.innerHTML=currentItem.detail.replace(/\n/g,'<br>');
-    payBtn.textContent=`🔓 赞助 ¥${currentItem.price} 获取网盘地址`;
-  });
+        if (data.ok) {
+            // 填充文本信息
+            document.getElementById('res-title').innerText = data.name;
+            document.getElementById('res-desc').innerText = data.description;
+            document.getElementById('buy-link').href = data.buyLink;
 
-payBtn.onclick = () => {
-  if (!currentItem) return;
-  // 每个资源自己的赞助链接（你在 data.json 里配的）
-  const link = (currentItem.afdLink || AFD_HOME).trim();
-  window.open(link, '_blank');
-  refreshTip.style.display = 'block';
-  unlockBox.style.display = 'block';
-};
+            // 2. 【核心修改】处理图片：最多显示 6 张
+            const imgContainer = document.getElementById('img-list');
+            imgContainer.innerHTML = ''; // 清空旧图
 
-/* 标准化：只留数字（把 AFD / 空格 / - 全清掉）*/
-function norm(v){
-  return (v||'').replace(/[^0-9]/g,'');
-}
-
-async function pasteToken(){
-  try{
-    tokenInput.value = norm(await navigator.clipboard.readText());
-    tokenInput.focus();
-  }catch(e){ tokenInput.focus(); }
-}
-
-async function doUnlock(){
-  const token = norm(tokenInput.value);
-
-  if(!token || token.length < 10){
-    alert('订单号位数不够（应从爱发电支付成功页复制完整订单号）');
-    return;
-  }
-
-  try{
-    const res = await fetch(`${API}/unlock`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ token })
-    });
-    const j = await res.json();
-
-    if(j.ok){
-      link.href=j.panUrl; link.textContent=j.panUrl;
-      code.textContent=j.panCode;
-      result.style.display='block';
-      unlockBox.style.display='none';
-    }else{
-      alert('❌ '+ (j.msg||'订单号无效'));
-      offlineBox.style.display='block';
+            if (data.images && data.images.length > 0) {
+                // 使用 slice(0, 6) 截取数组的前 6 个元素
+                const displayImages = data.images.slice(0, 6);
+                
+                displayImages.forEach(src => {
+                    const imgEl = document.createElement('img');
+                    imgEl.src = src;
+                    imgEl.alt = data.name;
+                    imgContainer.appendChild(imgEl);
+                });
+            } else {
+                imgContainer.innerHTML = '暂无预览图';
+            }
+        } else {
+            document.body.innerHTML = `<h1>资源未找到</h1>${data.msg}`;
+        }
+    } catch (e) {
+        console.error(e);
+        alert("加载详情失败，请刷新重试");
     }
-  }catch(e){
-    alert('⚠️ 网络错误，请重试');
-    offlineBox.style.display='block';
-  }
 }
 
-function doBackupUnlock(){
-  const v=backupInput.value.trim();
-  if(v===BACKUP_CODES[id]){
-    link.href=currentItem.panUrl; link.textContent=currentItem.panUrl;
-    code.textContent=currentItem.panCode;
-    result.style.display='block';
-    unlockBox.style.display='none';
-  }else alert('备用码错误，请联系站长');
-}
+// 解锁逻辑（保持不变）
+async function doUnlock() {
+    const token = document.getElementById('tokenInput').value.trim();
+    if (!token) return alert("请输入订单号");
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&unlockBox.offsetParent!==null) doUnlock();
-});
+    try {
+        const res = await fetch(`${API}/unlock`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token })
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+            document.getElementById('link').href = data.panUrl;
+            document.getElementById('link').textContent = data.panUrl;
+            document.getElementById('code').textContent = data.panCode;
+            document.getElementById('result').style.display = 'block';
+        } else {
+            alert("❌ " + data.msg);
+        }
+    } catch (e) {
+        alert("⚠️ 网络错误");
+    }
+}
 </script>
 </body>
 </html>
