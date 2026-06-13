@@ -488,53 +488,6 @@
     }
   }
 </script>
-<!-- ===== 新增：邮箱 + 解锁区域（从这里开始复制）===== -->
 
-<!-- 1. 邮箱联系方式 -->
-<p style="text-align: center; font-size: 14px; color: #888; margin-bottom: 5px;">
-  如有问题，可邮箱联系 3357134774@qq.com
-</p>
-
-<!-- 2. 免责声明 -->
-<p style="text-align: center; font-size: 12px; color: #aaa; margin-top: 0; margin-bottom: 20px;">
-  本站为个人整理分享，通过 爱发电 接受赞助支持，非商业售卖。
-</p>
-
-<!-- 3. 赞助解锁区域（横向排列） -->
-<div id="unlock-area" style="display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto;">
-
-  <!-- 左侧输入框 -->
-  <input 
-    type="text" 
-    id="token-input" 
-    placeholder="请输入订单号（纯数字）" 
-    style="flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none;"
-  />
-
-  <!-- 中间按钮 -->
-  <button 
-    onclick="unlockResource()" 
-    id="unlock-btn"
-    style="padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; display: flex; align-items: center; gap: 5px;"
-  >
-    <span>🔓</span> 解锁网盘地址
-  </button>
-
-  <!-- 右侧粘贴按钮 -->
-  <button 
-    onclick="pasteToken()" 
-    id="paste-btn"
-    style="padding: 12px 20px; background-color: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; display: none;"
-  >
-    粘贴
-  </button>
-</div>
-
-<!-- 4. 提示语 -->
-<p style="text-align: center; font-size: 13px; color: #999; margin-top: 10px;">
-  💡 赞助后请勿刷新页面，直接输入订单号即可解锁
-</p>
-
-<!-- ===== 新增结束 ===== -->
 </body>
 </html>
