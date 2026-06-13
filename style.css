@@ -217,28 +217,3 @@ h1 {
     max-width: 100%;
   }
 }
-/* ==================== 解锁区域布局修复 ==================== */
-
-/* PC端：横向排列 */
-@media (min-width: 769px) {
-  #unlock-area {
-    flex-direction: row !important; 
-    margin-left: auto !important; 
-    margin-right: auto !important;
-  }
-  
-  #paste-btn {
-    display: flex !important; 
-  }
-}
-
-/* 手机端：竖向排列，隐藏粘贴按钮 */
-@media (max-width: 768px) {
-  #unlock-area {
-    flex-direction: column;
-  }
-  
-  #paste-btn {
-    display: none;
-  }
-}
