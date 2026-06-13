@@ -120,7 +120,7 @@
       display: block;
     }
 
-    /* ==================== 赞助区域样式 ==================== */
+    /* ==================== 赞助区域样式（修复版）==================== */
     .sponsor-box {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -129,18 +129,26 @@
       text-align: center;
       margin-bottom: 30px;
       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      /* ✅ 修复：确保在桌面端可见 */
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: relative;
+      z-index: 10;
     }
 
     .sponsor-title {
       font-size: 20px;
       font-weight: bold;
       margin-bottom: 10px;
+      color: white;
     }
 
     .sponsor-desc {
       font-size: 14px;
       opacity: 0.9;
       margin-bottom: 20px;
+      color: white;
     }
 
     .sponsor-btn {
@@ -154,6 +162,9 @@
       font-size: 16px;
       transition: all 0.3s;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      /* ✅ 修复：确保按钮在桌面端可点击 */
+      cursor: pointer;
+      pointer-events: auto;
     }
 
     .sponsor-btn:hover {
@@ -262,6 +273,15 @@
       
       .input-group input {
         max-width: 100%;
+      }
+    }
+
+    /* ✅ 修复：桌面端特定样式 */
+    @media (min-width: 769px) {
+      .sponsor-box {
+        /* 确保桌面端显示 */
+        display: block !important;
+        margin-top: 30px;
       }
     }
   </style>
@@ -391,6 +411,14 @@
       // 切换页面显示
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('detailPage').style.display = 'block';
+      
+      // ✅ 强制显示赞助区域（修复Win端不显示的问题）
+      const sponsorBox = document.getElementById('sponsorBox');
+      if (sponsorBox) {
+        sponsorBox.style.display = 'block';
+        sponsorBox.style.visibility = 'visible';
+        sponsorBox.style.opacity = '1';
+      }
       
       // 从data.json加载数据
       const response = await fetch('data.json');
